@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
         hostname: "quibly.s3.sa-east-1.amazonaws.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com", // ✅ necessário para login Google
+        pathname: "/**",
+      },
     ],
   },
 };

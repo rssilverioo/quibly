@@ -25,10 +25,12 @@
   },
    "Navbar": {
     "home": "Home",
-    "documents": "My Documents",
-    "create": "Create",
-    "community": "Community",
-    "logout": "Logout"
+  "documents": "Documents",
+  "create": "Create",
+  "community": "Community",
+  "logout": "Sign out",
+  "checkingAuth": "Checking authentication..."
+    
   },
   "Flashcards": {
     "loading": "Loading flashcards...",

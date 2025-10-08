@@ -24,12 +24,12 @@
     "loadError": "Erro ao carregar seus documentos."
   },
    "Navbar": {
-    "home": "Início",
-    "documents": "Meus Documentos",
-    "create": "Criar",
-    "community": "Comunidade",
-    "logout": "Sair"
-
+  "home": "Início",
+  "documents": "Documentos",
+  "create": "Criar",
+  "community": "Comunidade",
+  "logout": "Sair",
+  "checkingAuth": "Verificando autenticação..."
   },
 "Flashcards": {
     "loading": "Carregando flashcards...",
