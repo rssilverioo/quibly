@@ -25,7 +25,7 @@ export default function LoginPage() {
   const syncUser = async (token: string, name?: string) => {
     try {
       await api.post(
-        "/sync",
+        "/auth/sync",
         { name },
         {
           headers: { Authorization: `Bearer ${token}` },
