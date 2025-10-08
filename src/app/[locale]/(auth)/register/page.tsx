@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const locale = useLocale();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +33,8 @@ export default function RegisterPage() {
       setLoading(true);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, { displayName: name });
-      router.push("/dashboard/home");
+            router.push(`/${locale}/dashboard/home`);
+
     } catch (err: any) {
       if (err.code === "auth/email-already-in-use") {
         setError("E-mail já cadastrado.");
