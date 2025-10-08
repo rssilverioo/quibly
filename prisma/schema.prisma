@@ -63,6 +63,7 @@ model Quiz {
   userId     String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  language   String? // 👈 idioma detectado
 
   // Relations
   document  Document?  @relation(fields: [documentId], references: [id])
@@ -136,8 +137,10 @@ model Flashcard {
  * ==========================================================
  */
 model FlashcardSet {
-  id         String   @id @default(uuid())
-  topic      String
+  id       String  @id @default(uuid())
+  topic    String
+  language String? // 👈 novo campo
+
   documentId String?
   userId     String
   createdAt  DateTime @default(now())

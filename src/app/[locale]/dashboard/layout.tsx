@@ -36,9 +36,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const navItems = [
     { name: t("home"), href: `/${locale}/dashboard/home`, icon: <Home size={18} /> },
-    { name: t("documents"), href: `/${locale}/dashboard/documents`, icon: <FileText size={18} /> },
+    // { name: t("documents"), href: `/${locale}/dashboard/documents`, icon: <FileText size={18} /> },
     { name: t("create"), href: `/${locale}/dashboard/upload`, icon: <Upload size={18} /> },
-    { name: t("community"), href: `/${locale}/dashboard/community`, icon: <Users size={18} /> },
+    // { name: t("community"), href: `/${locale}/dashboard/community`, icon: <Users size={18} /> },
   ];
 
   const handleLogout = async () => {
