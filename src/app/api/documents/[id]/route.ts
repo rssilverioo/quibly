@@ -9,8 +9,10 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 // ============================
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }   // ✅ precisa ser Promise no Next 15
 ) {
+  const { id } = await params;
+
   try {
     const authHeader = req.headers.get("authorization");
     if (!authHeader?.startsWith("Bearer ")) {
@@ -23,35 +25,24 @@ export async function GET(
     const user = await prisma.user.findUnique({
       where: { firebaseUid: decoded.uid },
     });
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
     const document = await prisma.document.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
-        quizzes: {
-          include: {
-            questions: { include: { options: true } },
-          },
-        },
-        sets: {
-          include: { cards: true },
-          orderBy: { createdAt: "desc" },
-        },
+        quizzes: { include: { questions: { include: { options: true } } } },
+        sets: { include: { cards: true }, orderBy: { createdAt: "desc" } },
       },
     });
 
-    if (!document) {
+    if (!document)
       return NextResponse.json({ error: "Document not found" }, { status: 404 });
-    }
 
-    if (document.userId !== user.id) {
+    if (document.userId !== user.id)
       return NextResponse.json(
         { error: "Forbidden: you don't own this document" },
         { status: 403 }
       );
-    }
 
     return NextResponse.json({
       ...document,
@@ -72,8 +63,10 @@ export async function GET(
 // ============================
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }   // ✅ idem aqui
 ) {
+  const { id } = await params;
+
   try {
     const authHeader = req.headers.get("authorization");
     if (!authHeader?.startsWith("Bearer ")) {
@@ -86,36 +79,28 @@ export async function DELETE(
     const user = await prisma.user.findUnique({
       where: { firebaseUid: decoded.uid },
     });
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    const document = await prisma.document.findUnique({
-      where: { id: params.id },
-    });
-    if (!document) {
+    const document = await prisma.document.findUnique({ where: { id } });
+    if (!document)
       return NextResponse.json({ error: "Document not found" }, { status: 404 });
-    }
 
-    // 🔐 Valida ownership
-    if (document.userId !== user.id) {
+    if (document.userId !== user.id)
       return NextResponse.json(
         { error: "Forbidden: you don't own this document" },
         { status: 403 }
       );
-    }
 
     // 🧹 Deleta relacionamentos
-    await prisma.flashcardSet.deleteMany({ where: { documentId: params.id } });
-    await prisma.quiz.deleteMany({ where: { documentId: params.id } });
+    await prisma.flashcardSet.deleteMany({ where: { documentId: id } });
+    await prisma.quiz.deleteMany({ where: { documentId: id } });
 
     // 🗑️ Deleta o documento no banco
-    await prisma.document.delete({ where: { id: params.id } });
+    await prisma.document.delete({ where: { id } });
 
-    // ☁️ Remove da S3 (caso o arquivo exista)
+    // ☁️ Remove da S3 se existir
     if (document.fileUrl?.includes("s3")) {
       try {
-        // Extrai o "key" da URL (ex: folder/file.pdf)
         const keyMatch = document.fileUrl.match(/amazonaws\.com\/(.+)$/);
         const key = keyMatch ? keyMatch[1] : null;
 
@@ -124,7 +109,6 @@ export async function DELETE(
             Bucket: process.env.AWS_S3_BUCKET!,
             Key: key,
           });
-
           await s3.send(command);
           console.log(`🗑️ Arquivo removido da S3: ${key}`);
         }
