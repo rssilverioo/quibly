@@ -1,0 +1,102 @@
+{
+  "Auth": {
+    "subtitle": "Transforme seus PDFs em aprendizado.",
+    "loginGoogle": "Entrar com Google",
+    "email": "E-mail",
+    "password": "Senha",
+    "login": "Entrar",
+    "loading": "Entrando...",
+    "invalidCredentials": "E-mail ou senha inválidos.",
+    "googleError": "Erro ao entrar com Google.",
+    "or": "ou",
+    "noAccount": "Não tem uma conta?",
+    "register": "Registrar"
+  },
+"Dashboard": {
+ "myDocuments": "Meus Documentos",
+    "noContent": "Você ainda não enviou nenhum documento 📄",
+    "noContentDesc": "Envie um PDF para gerar flashcards e quizzes.",
+    "flashcards": "flashcards",
+    "quizzes": "quizzes",
+    "flashcardsBtn": "Flashcards",
+    "quizBtn": "Quiz",
+    "loading": "Carregando documentos...",
+    "loadError": "Erro ao carregar seus documentos."
+  },
+   "Navbar": {
+    "home": "Início",
+    "documents": "Meus Documentos",
+    "create": "Criar",
+    "community": "Comunidade",
+    "logout": "Sair"
+
+  },
+"Flashcards": {
+    "loading": "Carregando flashcards...",
+    "noCards": "Nenhum flashcard disponível para este documento.",
+    "card": "Flashcard",
+    "of": "de",
+    "prev": "Anterior",
+    "next": "Próximo",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "completed": "✅ Você concluiu todos os flashcards!",
+    "backDashboard": "Voltar ao Dashboard"
+  },
+  "Toasts": {
+    "loadError": "Erro ao carregar dados.",
+    "unauthenticated": "Usuário não autenticado.",
+    "deletedSuccess": "Documento excluído com sucesso!",
+    "deleteError": "Erro ao excluir o documento."
+  },
+  "Home": {
+    "loading": "Carregando documentos...",
+    "emptyTitle": "Ainda não há conteúdo disponível 📄",
+    "emptyDesc": "Faça upload de um documento para começar 🚀",
+    "myDocuments": "Meus Documentos",
+    "flashcards": "flashcards",
+    "quizzes": "quizzes",
+    "flashcardsBtn": "Flashcards",
+    "quizBtn": "Quiz"
+  },
+   "Upload": {
+    "title": "Envie seu documento",
+    "subtitle": "Envie um PDF e gere quizzes ou flashcards automaticamente com IA.",
+    "invalidFile": "Arquivo inválido. Envie apenas PDFs.",
+    "noFile": "Selecione um arquivo primeiro.",
+    "missingTitle": "Digite um título para o documento.",
+    "documentTitle": "Título do documento",
+    "titlePlaceholder": "Ex: Biologia Celular - Aula 1",
+    "dragDrop": "Arraste e solte seu PDF aqui",
+    "dropHere": "Solte o arquivo aqui",
+    "orClick": "ou clique para selecionar",
+    "uploadBtn": "Fazer upload",
+    "uploading": "Enviando...",
+    "processing": "Processando...",
+    "uploadSuccess": "Upload concluído com sucesso!",
+    "generateQuiz": "Gerar Quiz",
+    "generateFlashcards": "Gerar Flashcards",
+    "generatingQuiz": "Gerando Quiz...",
+    "generatingFlashcards": "Gerando Flashcards...",
+    "quizGenerated": "Quiz gerado com sucesso!",
+    "flashcardsGenerated": "Flashcards gerados com sucesso!",
+    "viewQuiz": "Visualizar Quiz",
+    "viewFlashcards": "Visualizar Flashcards",
+    "error": "Ocorreu um erro. Tente novamente.",
+    "generationError": "Erro ao gerar conteúdo. Tente novamente.",
+    "Quiz": {
+    "loadingQuiz": "Carregando quiz...",
+    "loadError": "Ocorreu um erro ao carregar o quiz 😔",
+    "noQuiz": "Nenhum quiz foi gerado para este documento.",
+    "loadingImages": "Carregando imagens...",
+    "questions": "perguntas",
+    "correct": "Correto!",
+    "wrong": "Errado!",
+    "correctAnswer": "Resposta correta",
+    "prev": "Anterior",
+    "next": "Próxima",
+    "result": "Você acertou {score} de {total} perguntas!",
+    "congrats": "Parabéns por completar o quiz! 🎉"
+  }
+  }
+}

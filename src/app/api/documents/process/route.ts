@@ -3,13 +3,14 @@ import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
 import { fal } from "@fal-ai/client";
 
-// 🔹 Configura Fal.ai SDK
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// 🔹 Configura Fal.ai SDK (mesmo do flashcard)
 fal.config({
   credentials: process.env.FAL_API_KEY!,
 });
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
+// 🔹 Gera imagem Fal.ai
 async function generateFalImage(prompt: string) {
   const result = await fal.subscribe("fal-ai/flux-pro", {
     input: {
@@ -19,15 +20,14 @@ async function generateFalImage(prompt: string) {
     },
   });
 
-  // O SDK retorna { data: { images: [{ url: "..." }] } }
   return result.data?.images?.[0]?.url || null;
 }
-
 
 export async function POST(req: NextRequest) {
   try {
     const { documentId, numQuestions = 10 } = await req.json();
 
+    // 🔹 Busca documento no banco
     const document = await prisma.document.findUnique({
       where: { id: documentId },
     });
@@ -43,20 +43,19 @@ export async function POST(req: NextRequest) {
     let safeNum = Math.max(5, Math.min(numQuestions, 20));
     safeNum = Math.ceil(safeNum / 5) * 5;
 
-    // 🔹 Prompt para OpenAI (gera perguntas e prompts para imagens)
+    // 🔹 Prompt OpenAI
     const prompt = `
 Detecte automaticamente o idioma do conteúdo e crie exatamente ${safeNum} perguntas de múltipla escolha nesse idioma.
 70% devem ser perguntas de texto ("kind": "TEXT") e 30% perguntas de imagem ("kind": "IMAGE").
 
 Para as perguntas de imagem:
-- Elas devem representar conceitos, objetos, animais, órgãos, gráficos, mapas, diagramas ou cenas visuais que possam ser ilustrados realisticamente.
-- Crie um campo "correctPrompt" descrevendo a imagem correta com riqueza de detalhes.
-- Crie também um array "wrongPrompts" com 3 descrições semelhantes, mas incorretas e visualmente relacionadas ao mesmo tema (ex: se a correta é "microscopia de célula vegetal", uma incorreta pode ser "microscopia de célula animal").
-- As imagens incorretas devem parecer plausíveis, mas conter erro conceitual.
+- Elas devem representar conceitos, objetos, animais, órgãos, gráficos, mapas, diagramas ou cenas visuais.
+- Crie um campo "correctPrompt" descrevendo a imagem correta com detalhes.
+- Crie também um array "wrongPrompts" com 3 descrições incorretas, porém semelhantes.
 
 Responda 100% em JSON no formato:
 {
-  "topic": "Título do quiz no mesmo idioma",
+  "topic": "Título do quiz",
   "questions": [
     {
       "kind": "TEXT" | "IMAGE",
@@ -80,7 +79,11 @@ ${document.content}
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "Você é um criador de quizzes multilíngues e multimodais (texto + imagem)." },
+        {
+          role: "system",
+          content:
+            "Você é um criador de quizzes multilíngues e multimodais (texto + imagem).",
+        },
         { role: "user", content: prompt },
       ],
     });
@@ -91,14 +94,14 @@ ${document.content}
     try {
       parsed = JSON.parse(raw.replace(/```json|```/g, "").trim());
     } catch (err) {
-      console.error("Invalid JSON:", raw);
+      console.error("❌ JSON inválido:", raw);
       return NextResponse.json(
-        { error: "OpenAI did not return valid JSON", raw },
+        { error: "Invalid JSON returned by OpenAI", raw },
         { status: 500 }
       );
     }
 
-    // 🔹 Processa perguntas IMAGE → gera imagens na Fal.ai
+    // 🔹 Processa perguntas IMAGE → Fal.ai
     const processedQuestions = await Promise.all(
       parsed.questions.map(async (q: any) => {
         if (q.kind === "IMAGE" && q.correctPrompt) {
@@ -119,19 +122,19 @@ ${document.content}
           return {
             ...q,
             options,
-            answer: "Imagem correta", // opcional
+            answer: "Imagem correta",
           };
         }
-        return q; // pergunta TEXT normal
+        return q;
       })
     );
 
-    // 🔹 Salva no banco
+    // 🔹 Cria quiz no mesmo formato do flashcardSet
     const quiz = await prisma.quiz.create({
       data: {
         topic: parsed.topic || document.subject || "Quiz",
-        documentId: document.id,
-        userId: document.userId,
+        document: { connect: { id: document.id } }, // 🔗 conecta documento
+        user: { connect: { id: document.userId } }, // 🔗 conecta usuário dono do documento
         questions: {
           create: processedQuestions.map((q: any) => ({
             kind: q.kind || "TEXT",
@@ -151,9 +154,11 @@ ${document.content}
       include: { questions: { include: { options: true } } },
     });
 
+    console.log(`✅ Quiz criado: ${quiz.topic} (${quiz.questions.length} perguntas)`);
+
     return NextResponse.json({ quiz });
   } catch (err) {
-    console.error("Quiz generation failed:", err);
+    console.error("❌ Quiz generation failed:", err);
     return NextResponse.json(
       { error: "Quiz generation failed", details: String(err) },
       { status: 500 }

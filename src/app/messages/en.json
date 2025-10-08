@@ -1,0 +1,101 @@
+{
+  "Auth": {
+    "subtitle": "Turn your PDFs into learning.",
+    "loginGoogle": "Sign in with Google",
+    "email": "Email",
+    "password": "Password",
+    "login": "Sign in",
+    "loading": "Signing in...",
+    "invalidCredentials": "Invalid email or password.",
+    "googleError": "Error signing in with Google.",
+    "or": "or",
+    "noAccount": "Don't have an account?",
+    "register": "Register"
+  },
+ "Dashboard": {
+  "myDocuments": "My Documents",
+    "noContent": "You haven't uploaded any document yet 📄",
+    "noContentDesc": "Upload a PDF to generate flashcards and quizzes.",
+    "flashcards": "flashcards",
+    "quizzes": "quizzes",
+    "flashcardsBtn": "Flashcards",
+    "quizBtn": "Quiz",
+    "loading": "Loading documents...",
+    "loadError": "Error loading your documents."
+  },
+   "Navbar": {
+    "home": "Home",
+    "documents": "My Documents",
+    "create": "Create",
+    "community": "Community",
+    "logout": "Logout"
+  },
+  "Flashcards": {
+    "loading": "Loading flashcards...",
+    "noCards": "No flashcards available for this document.",
+    "card": "Card",
+    "of": "of",
+    "prev": "Previous",
+    "next": "Next",
+    "pause": "Pause",
+    "resume": "Resume",
+    "completed": "✅ You have completed all flashcards!",
+    "backDashboard": "Back to Dashboard"
+  },
+  "Toasts": {
+    "loadError": "Failed to load data.",
+    "unauthenticated": "User not authenticated.",
+    "deletedSuccess": "Document deleted successfully!",
+    "deleteError": "Error deleting document."
+  },
+    "Home": {
+    "loading": "Loading documents...",
+    "emptyTitle": "No content available yet 📄",
+    "emptyDesc": "Upload a document to start 🚀",
+    "myDocuments": "My Documents",
+    "flashcards": "flashcards",
+    "quizzes": "quizzes",
+    "flashcardsBtn": "Flashcards",
+    "quizBtn": "Quiz"
+  },
+"Upload": {
+    "title": "Upload your document",
+    "subtitle": "Upload a PDF and automatically generate quizzes or flashcards using AI.",
+    "invalidFile": "Invalid file. Please upload a PDF.",
+    "noFile": "Select a file first.",
+    "missingTitle": "Please enter a document title.",
+    "documentTitle": "Document title",
+    "titlePlaceholder": "E.g. Cell Biology - Lecture 1",
+    "dragDrop": "Drag and drop your PDF here",
+    "dropHere": "Drop the file here",
+    "orClick": "or click to select",
+    "uploadBtn": "Upload file",
+    "uploading": "Uploading...",
+    "processing": "Processing...",
+    "uploadSuccess": "Upload completed successfully!",
+    "generateQuiz": "Generate Quiz",
+    "generateFlashcards": "Generate Flashcards",
+    "generatingQuiz": "Generating Quiz...",
+    "generatingFlashcards": "Generating Flashcards...",
+    "quizGenerated": "Quiz generated successfully!",
+    "flashcardsGenerated": "Flashcards generated successfully!",
+    "viewQuiz": "View Quiz",
+    "viewFlashcards": "View Flashcards",
+    "error": "An error occurred. Please try again.",
+    "generationError": "Error generating content. Please try again."
+  },
+    "Quiz": {
+    "loadingQuiz": "Loading quiz...",
+    "loadError": "An error occurred while loading the quiz 😔",
+    "noQuiz": "No quiz has been generated for this document.",
+    "loadingImages": "Loading images...",
+    "questions": "questions",
+    "correct": "Correct!",
+    "wrong": "Wrong!",
+    "correctAnswer": "Correct answer",
+    "prev": "Previous",
+    "next": "Next",
+    "result": "You got {score} out of {total} questions right!",
+    "congrats": "Congratulations on completing the quiz! 🎉"
+  }
+}
