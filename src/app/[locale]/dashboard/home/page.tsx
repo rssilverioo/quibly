@@ -47,32 +47,45 @@ export default function HomePage() {
   }, [toastT]);
 
   // 🔹 Função para excluir documento
-  const handleDelete = async (id: string) => {
-    const confirmed = confirm(t("confirmDelete"));
-    if (!confirmed) return;
+const handleDelete = (id: string) => {
+  const tId = toast.warning("🗑️ Deseja realmente excluir este documento?", {
+    duration: 5000,
+    action: {
+      label: "Excluir",
+      onClick: async () => {
+        const user = auth.currentUser;
+        if (!user) {
+          toast.error("⚠️ " + toastT("unauthenticated"));
+          return;
+        }
 
-    const user = auth.currentUser;
-    if (!user) return toast.error(toastT("unauthenticated"));
+        try {
+          setDeleting(id);
+          const token = await user.getIdToken(true);
 
-    try {
-      setDeleting(id);
-      const token = await user.getIdToken(true);
+          await api.delete(`/documents/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-      await api.delete(`/documents/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+          setDocuments((prev) => prev.filter((doc) => doc.id !== id));
+          toast.success("✅ " + toastT("deletedSuccess"));
+        } catch (err) {
+          console.error("❌ Erro ao excluir documento:", err);
+          toast.error("❌ " + toastT("deleteError"));
+        } finally {
+          setDeleting(null);
+        }
 
-      // Remove o documento do estado local
-      setDocuments((prev) => prev.filter((doc) => doc.id !== id));
-      toast.success(toastT("deletedSuccess"));
-    } catch (err) {
-      console.error("❌ Erro ao excluir documento:", err);
-      toast.error(toastT("deleteError"));
-    } finally {
-      setDeleting(null);
-    }
-  };
-
+        // Fecha o toast de confirmação
+        toast.dismiss(tId);
+      },
+    },
+    cancel: {
+      label: "Cancelar",
+      onClick: () => toast.dismiss(tId),
+    },
+  });
+};
   // 🔹 Skeleton de carregamento
   if (loading)
     return (
