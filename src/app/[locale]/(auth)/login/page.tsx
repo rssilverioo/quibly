@@ -8,8 +8,10 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { api } from "@/lib/api";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const t = useTranslations("Auth");
@@ -19,17 +21,34 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+
+  const syncUser = async (token: string, name?: string) => {
+    try {
+      await api.post(
+        "/sync",
+        { name },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch (err) {
+      console.warn("⚠️ Falha ao sincronizar usuário:", err);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const token = await cred.user.getIdToken();
+      await syncUser(token, cred.user.displayName || undefined);
+
+      toast.success(t("loginSuccess"));
       router.push(`/${locale}/dashboard/home`);
-    } catch {
-      setError(t("invalidCredentials"));
+    } catch (err) {
+      console.error("❌ Erro login:", err);
+      toast.error(t("invalidCredentials"));
     } finally {
       setLoading(false);
     }
@@ -38,10 +57,15 @@ export default function LoginPage() {
   const handleGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const cred = await signInWithPopup(auth, provider);
+      const token = await cred.user.getIdToken();
+      await syncUser(token, cred.user.displayName || undefined);
+
+      toast.success(t("googleSuccess"));
       router.push(`/${locale}/dashboard/home`);
-    } catch {
-      setError(t("googleError"));
+    } catch (err) {
+      console.error("❌ Erro Google login:", err);
+      toast.error(t("googleError"));
     }
   };
 
@@ -59,7 +83,8 @@ export default function LoginPage() {
       <button
         type="button"
         onClick={handleGoogle}
-        className="w-full flex items-center justify-center gap-2 bg-[#1E212A] hover:bg-[#242832] border border-[#2A2E38] text-white py-2 rounded-lg transition"
+        disabled={loading}
+        className="w-full flex items-center justify-center gap-2 bg-[#1E212A] hover:bg-[#242832] border border-[#2A2E38] text-white py-2 rounded-lg transition disabled:opacity-50"
       >
         <svg
           className="w-5 h-5"
@@ -75,6 +100,7 @@ export default function LoginPage() {
         {t("loginGoogle")}
       </button>
 
+      {/* Divider */}
       <div className="relative text-center">
         <div className="absolute inset-x-0 top-1/2 border-t border-[#1E212A]" />
         <span className="bg-[#11141A] text-gray-500 text-sm px-3 relative z-10">
@@ -84,31 +110,27 @@ export default function LoginPage() {
 
       {/* Email Login */}
       <form onSubmit={handleLogin} className="space-y-4">
-        <div>
-          <input
-            type="email"
-            placeholder={t("email")}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            placeholder={t("password")}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-        </div>
-
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        <input
+          type="email"
+          placeholder={t("email")}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          required
+        />
+        <input
+          type="password"
+          placeholder={t("password")}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          required
+        />
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition font-medium"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition font-medium disabled:opacity-50"
         >
           {loading ? t("loading") : t("login")}
         </button>

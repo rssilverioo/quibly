@@ -9,50 +9,83 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { api } from "@/lib/api";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const t = useTranslations("Auth");
+  const locale = useLocale();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const locale = useLocale();
 
+  // 🔹 Função para sincronizar usuário com o backend
+  const syncUser = async (token: string, name?: string) => {
+    try {
+      await api.post(
+        "/sync",
+        { name },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch (err) {
+      console.warn("⚠️ Falha ao sincronizar usuário:", err);
+    }
+  };
+
+  // 🔹 Registro via e-mail/senha
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+
     if (!name.trim()) {
-      setError("Por favor, insira seu nome.");
+      toast.error(t("nameRequired"));
       return;
     }
 
     try {
       setLoading(true);
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(userCredential.user, { displayName: name });
-            router.push(`/${locale}/dashboard/home`);
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: name });
 
+      const token = await cred.user.getIdToken();
+      await syncUser(token, name);
+
+      toast.success(t("registerSuccess"));
+      router.push(`/${locale}/dashboard/home`);
     } catch (err: any) {
+      console.error("❌ Erro no registro:", err);
+
       if (err.code === "auth/email-already-in-use") {
-        setError("E-mail já cadastrado.");
+        toast.error(t("emailInUse"));
+      } else if (err.code === "auth/weak-password") {
+        toast.error(t("weakPassword"));
       } else {
-        setError("Erro ao registrar. Tente novamente.");
+        toast.error(t("registerError"));
       }
     } finally {
       setLoading(false);
     }
   };
 
+  // 🔹 Registro/Login via Google
   const handleGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      router.push("/dashboard/home");
+      const cred = await signInWithPopup(auth, provider);
+      const token = await cred.user.getIdToken();
+      await syncUser(token, cred.user.displayName || undefined);
+
+      toast.success(t("googleSuccess"));
+      router.push(`/${locale}/dashboard/home`);
     } catch (err) {
-      setError("Erro ao registrar com Google.");
+      console.error("❌ Erro Google Auth:", err);
+      toast.error(t("googleError"));
     }
   };
 
@@ -64,7 +97,7 @@ export default function RegisterPage() {
           Quibly <span className="text-blue-500 text-4xl">📘</span>
         </h1>
         <p className="text-gray-400 text-sm mt-1">
-          Crie sua conta e transforme seus PDFs em aprendizado.
+          {t("registerSubtitle")}
         </p>
       </div>
 
@@ -72,7 +105,8 @@ export default function RegisterPage() {
       <button
         type="button"
         onClick={handleGoogle}
-        className="w-full flex items-center justify-center gap-2 bg-[#1E212A] hover:bg-[#242832] border border-[#2A2E38] text-white py-2 rounded-lg transition"
+        disabled={loading}
+        className="w-full flex items-center justify-center gap-2 bg-[#1E212A] hover:bg-[#242832] border border-[#2A2E38] text-white py-2 rounded-lg transition disabled:opacity-50"
       >
         <svg
           className="w-5 h-5"
@@ -85,63 +119,58 @@ export default function RegisterPage() {
           <path d="M112.5 293.7c-4.6-13.7-7.2-28.3-7.2-43.7s2.6-30 7.2-43.7v-63.1h-81C15.4 179.9 0 213.4 0 250s15.4 70.1 31.5 106.8l81-63.1z" />
           <path d="M249 97.6c35.9 0 68.1 12.4 93.4 36.7l69.8-69.8C370.4 26.5 315.1 4 249 4 152.9 4 71 56.4 31.5 143.2l81 63.1C131.7 140.4 185.5 97.6 249 97.6z" />
         </svg>
-        Registrar com Google
+        {t("registerGoogle")}
       </button>
 
+      {/* Divider */}
       <div className="relative text-center">
         <div className="absolute inset-x-0 top-1/2 border-t border-[#1E212A]" />
-        <span className="bg-[#11141A] text-gray-500 text-sm px-3 relative z-10">ou</span>
+        <span className="bg-[#11141A] text-gray-500 text-sm px-3 relative z-10">
+          {t("or")}
+        </span>
       </div>
 
-      {/* Form */}
+      {/* Email Register Form */}
       <form onSubmit={handleRegister} className="space-y-4">
-        <div>
-          <input
-            type="text"
-            placeholder="Nome completo"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-            required
-          />
-        </div>
-
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        <input
+          type="text"
+          placeholder={t("fullName")}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          required
+        />
+        <input
+          type="email"
+          placeholder={t("email")}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          required
+        />
+        <input
+          type="password"
+          placeholder={t("password")}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full bg-[#1E212A] border border-[#2A2E38] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          required
+        />
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition font-medium"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition font-medium disabled:opacity-50"
         >
-          {loading ? "Criando conta..." : "Registrar"}
+          {loading ? t("creatingAccount") : t("register")}
         </button>
       </form>
 
       {/* Footer */}
       <p className="text-center text-sm text-gray-400">
-        Já tem uma conta?{" "}
-        <Link href="/login" className="text-blue-500 hover:underline">
-          Entrar
+        {t("alreadyHaveAccount")}{" "}
+        <Link href={`/${locale}/login`} className="text-blue-500 hover:underline">
+          {t("login")}
         </Link>
       </p>
     </div>

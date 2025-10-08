@@ -10,7 +10,18 @@
     "googleError": "Erro ao entrar com Google.",
     "or": "ou",
     "noAccount": "Não tem uma conta?",
-    "register": "Registrar"
+    "register": "Registrar",
+        "nameRequired": "Por favor, insira seu nome.",
+    "registerSuccess": "Conta criada com sucesso!",
+    "emailInUse": "E-mail já cadastrado.",
+    "weakPassword": "A senha deve ter pelo menos 6 caracteres.",
+    "registerError": "Erro ao criar conta. Tente novamente.",
+    "googleSuccess": "Login com Google realizado com sucesso!",
+    "registerSubtitle": "Crie sua conta e transforme seus PDFs em aprendizado.",
+    "registerGoogle": "Registrar com Google",
+    "fullName": "Nome completo",
+    "creatingAccount": "Criando conta...",
+    "alreadyHaveAccount": "Já tem uma conta?"
   },
 "Dashboard": {
  "myDocuments": "Meus Documentos",
