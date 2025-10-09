@@ -104,6 +104,7 @@ ${document.content.slice(0, 5000)}
     });
 
 
+    
 
     return NextResponse.json({
       message: "✅ Flashcards criados com sucesso",
