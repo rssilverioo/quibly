@@ -88,7 +88,6 @@ ${document.content.slice(0, 5000)}
     const flashcardSet = await prisma.flashcardSet.create({
       data: {
         topic: parsed.topic || document.subject || "Flashcards",
-        language: parsed.language || "Desconhecido",
         document: { connect: { id: document.id } },
         user: { connect: { id: document.userId } },
         cards: {
@@ -104,7 +103,7 @@ ${document.content.slice(0, 5000)}
     });
 
 
-    
+
 
     return NextResponse.json({
       message: "✅ Flashcards criados com sucesso",
