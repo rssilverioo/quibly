@@ -144,7 +144,6 @@ ${document.content.slice(0, 5000)}
     const quiz = await prisma.quiz.create({
       data: {
         topic: parsed.topic || document.subject || "Quiz",
-        language: parsed.language || "Desconhecido", // ✅ idioma detectado
         document: { connect: { id: document.id } },
         user: { connect: { id: document.userId } },
         questions: {
