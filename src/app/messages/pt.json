@@ -48,7 +48,7 @@
     "card": "Flashcard",
     "of": "de",
     "prev": "Anterior",
-    "next": "Próximo",
+    "previous": "Próximo",
     "pause": "Pausar",
     "resume": "Retomar",
     "completed": "✅ Você concluiu todos os flashcards!",
