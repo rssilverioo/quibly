@@ -18,14 +18,11 @@ export async function GET(req: NextRequest) {
     const user = await prisma.user.findUnique({
       where: { firebaseUid: decoded.uid },
       include: {
-        documents: {
-          select: { id: true, title: true, userId: true, createdAt: true },
-        },
-        sets: {
-          select: { id: true, topic: true, userId: true, createdAt: true },
-        },
+        Subscription: true, // 👈 adiciona aqui
+        documents: { select: { id: true, title: true, createdAt: true } },
+        sets: { select: { id: true, topic: true, createdAt: true } },
         flashcards: {
-          select: { id: true, front: true, userId: true, flashcardSetId: true },
+          select: { id: true, front: true, flashcardSetId: true },
           take: 10,
         },
       },
