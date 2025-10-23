@@ -1,13 +1,19 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: any // 👈 troque o tipo para "any" para o compilador aceitar o formato
 ) {
+  const id = context?.params?.id;
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
+  }
+
   try {
     const user = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         Subscription: true,
       },
