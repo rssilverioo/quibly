@@ -1,14 +1,16 @@
 "use client";
 
+import { api } from "@/lib/api";
+import { auth } from "@/lib/firebase";
+import clsx from "clsx";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { CreditCard, Crown, Globe, Home, LogOut, Upload } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
-import { ReactNode, useState, useEffect } from "react";
-import clsx from "clsx";
-import { useTranslations, useLocale } from "next-intl";
-import { signOut, onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { Globe, LogOut, Home, FileText, Upload, Users } from "lucide-react";
+import { ReactNode, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const t = useTranslations("Navbar");
@@ -19,26 +21,54 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [plan, setPlan] = useState<"FREE" | "PREMIUM">("FREE"); // 👈 novo estado
 
-  // 🔒 Verifica login
+  // 🔒 Verifica login + plano
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
+    const unsub = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
         router.push(`/${locale}/login`);
-      } else {
-        setUser(currentUser);
+        return;
       }
+
+      setUser(currentUser);
+
+      try {
+        // Busca dados completos (incluindo plano)
+        const { data } = await api.get("/users/me");
+        setPlan(data.plan || "FREE");
+      } catch {
+        toast.error("Erro ao carregar plano do usuário");
+      }
+
       setCheckingAuth(false);
     });
 
     return () => unsub();
   }, [router, locale]);
 
+  // ✅ Nav dinâmica conforme o plano
   const navItems = [
-    { name: t("home"), href: `/${locale}/dashboard/home`, icon: <Home size={18} /> },
-    // { name: t("documents"), href: `/${locale}/dashboard/documents`, icon: <FileText size={18} /> },
-    { name: t("create"), href: `/${locale}/dashboard/upload`, icon: <Upload size={18} /> },
-    // { name: t("community"), href: `/${locale}/dashboard/community`, icon: <Users size={18} /> },
+    {
+      name: t("home"),
+      href: `/${locale}/dashboard/home`,
+      icon: <Home size={18} />,
+    },
+    {
+      name: t("create"),
+      href: `/${locale}/dashboard/upload`,
+      icon: <Upload size={18} />,
+    },
+    {
+      name: plan === "PREMIUM" ? "🌟 PRO" : "💡 Free", // 👈 muda dinamicamente
+      href: `/${locale}/dashboard/subscribe`,
+      icon:
+        plan === "PREMIUM" ? (
+          <Crown size={18} className="text-yellow-400" />
+        ) : (
+          <CreditCard size={18} />
+        ),
+    },
   ];
 
   const handleLogout = async () => {
@@ -55,7 +85,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const languages = [
     { code: "en", label: "English", flag: "🇺🇸" },
     { code: "pt", label: "Português", flag: "🇧🇷" },
-    { code: "es", label: "Español", flag: "🇪🇸" },
   ];
 
   // 🌀 Loading enquanto verifica auth
@@ -74,9 +103,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-[#0B0D12]/90 backdrop-blur-md border-b border-[#1E212A]">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <Link href={`/${locale}/dashboard/home`} className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-sm" />
-            <span className="font-semibold text-lg">Quibly</span>
+          <Link
+            href={`/${locale}/dashboard/home`}
+            className="flex items-center gap-2"
+          >
+            <Image src="/logoquibly.svg" alt="Logo" width={100} height={100} />
           </Link>
         </div>
 
@@ -150,7 +181,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Conteúdo principal */}
-      <main className="flex-1 max-w-7xl mx-auto w-full p-6 pb-24">{children}</main>
+      <main className="flex-1 max-w-7xl mx-auto w-full p-6 pb-24">
+        {children}
+      </main>
 
       {/* Menu mobile fixo */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0B0D12]/95 border-t border-[#1E212A] flex justify-around py-3 backdrop-blur-lg">
@@ -162,7 +195,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               href={item.href}
               className={clsx(
                 "flex flex-col items-center text-xs transition",
-                active ? "text-blue-500" : "text-gray-400 hover:text-white"
+                active
+                  ? plan === "PREMIUM"
+                    ? "text-yellow-400"
+                    : "text-blue-500"
+                  : "text-gray-400 hover:text-white"
               )}
             >
               <div>{item.icon}</div>

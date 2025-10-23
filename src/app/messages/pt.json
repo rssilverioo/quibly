@@ -11,7 +11,7 @@
     "or": "ou",
     "noAccount": "Não tem uma conta?",
     "register": "Registrar",
-        "nameRequired": "Por favor, insira seu nome.",
+    "nameRequired": "Por favor, insira seu nome.",
     "registerSuccess": "Conta criada com sucesso!",
     "emailInUse": "E-mail já cadastrado.",
     "weakPassword": "A senha deve ter pelo menos 6 caracteres.",
@@ -23,8 +23,8 @@
     "creatingAccount": "Criando conta...",
     "alreadyHaveAccount": "Já tem uma conta?"
   },
-"Dashboard": {
- "myDocuments": "Meus Documentos",
+  "Dashboard": {
+    "myDocuments": "Meus Documentos",
     "noContent": "Você ainda não enviou nenhum documento 📄",
     "noContentDesc": "Envie um PDF para gerar flashcards e quizzes.",
     "flashcards": "flashcards",
@@ -34,15 +34,16 @@
     "loading": "Carregando documentos...",
     "loadError": "Erro ao carregar seus documentos."
   },
-   "Navbar": {
-  "home": "Início",
-  "documents": "Documentos",
-  "create": "Criar",
-  "community": "Comunidade",
-  "logout": "Sair",
-  "checkingAuth": "Verificando autenticação..."
+  "Navbar": {
+    "home": "Início",
+    "documents": "Documentos",
+    "create": "Criar",
+    "pro": "PRO",
+    "community": "Comunidade",
+    "logout": "Sair",
+    "checkingAuth": "Verificando autenticação..."
   },
-"Flashcards": {
+  "Flashcards": {
     "loading": "Carregando flashcards...",
     "noCards": "Nenhum flashcard disponível para este documento.",
     "card": "Flashcard",
@@ -64,14 +65,23 @@
   "Home": {
     "loading": "Carregando documentos...",
     "emptyTitle": "Ainda não há conteúdo disponível 📄",
-    "emptyDesc": "Faça upload de um documento para começar 🚀",
+    "emptyDesc": "Envie um documento para começar 🚀",
     "myDocuments": "Meus Documentos",
     "flashcards": "flashcards",
     "quizzes": "quizzes",
     "flashcardsBtn": "Flashcards",
-    "quizBtn": "Quiz"
+    "quizBtn": "Quiz",
+    "readyToGenerate": "Gere seus quizzes ou flashcards com IA ⚡️",
+    "readyToView": "Seu conteúdo está pronto — comece a estudar! 📚",
+    "generateFlashcards": "Gerar Flashcards",
+    "generateQuiz": "Gerar Quiz",
+    "viewFlashcards": "Ver Flashcards",
+    "viewQuiz": "Ver Quiz",
+    "quizGeneratedSuccess": "Quiz gerado com sucesso!",
+    "flashcardsGeneratedSuccess": "Flashcards gerados com sucesso!",
+    "generationError": "Erro ao gerar conteúdo. Tente novamente."
   },
-   "Upload": {
+  "Upload": {
     "title": "Envie seu documento",
     "subtitle": "Envie um PDF e gere quizzes ou flashcards automaticamente com IA.",
     "invalidFile": "Arquivo inválido. Envie apenas PDFs.",
@@ -97,18 +107,61 @@
     "error": "Ocorreu um erro. Tente novamente.",
     "generationError": "Erro ao gerar conteúdo. Tente novamente.",
     "Quiz": {
-    "loadingQuiz": "Carregando quiz...",
-    "loadError": "Ocorreu um erro ao carregar o quiz 😔",
-    "noQuiz": "Nenhum quiz foi gerado para este documento.",
-    "loadingImages": "Carregando imagens...",
-    "questions": "perguntas",
-    "correct": "Correto!",
-    "wrong": "Errado!",
-    "correctAnswer": "Resposta correta",
-    "prev": "Anterior",
-    "next": "Próxima",
-    "result": "Você acertou {score} de {total} perguntas!",
-    "congrats": "Parabéns por completar o quiz! 🎉"
-  }
+      "loadingQuiz": "Carregando quiz...",
+      "loadError": "Ocorreu um erro ao carregar o quiz 😔",
+      "noQuiz": "Nenhum quiz foi gerado para este documento.",
+      "loadingImages": "Carregando imagens...",
+      "questions": "perguntas",
+      "correct": "Correto!",
+      "wrong": "Errado!",
+      "correctAnswer": "Resposta correta",
+      "prev": "Anterior",
+      "next": "Próxima",
+      "result": "Você acertou {score} de {total} perguntas!",
+      "congrats": "Parabéns por completar o quiz! 🎉"
+    }
+  },
+  "Subscribe": {
+    "loading": "Carregando informações da assinatura...",
+    "titleFree": "Assine o Quibly PRO",
+    "titlePremium": "🎉 Você já é Premium!",
+    "description": "Desbloqueie geração ilimitada de quizzes e flashcards com IA.",
+    "monthly": "Mensal",
+    "yearly": "Anual",
+    "subscribeBtn": "Assinar por",
+    "redirecting": "Redirecionando...",
+    "manageBtn": "Gerenciar assinatura",
+    "activePlan": "Você tem acesso total a todos os recursos do Quibly. 🌟",
+    "nextBilling": "Próxima cobrança:",
+    "features": {
+      "unlimitedQuizzes": "Quizzes ilimitados",
+      "unlimitedFlashcards": "Flashcards sem limite por documento",
+      "earlyAccess": "Acesso antecipado a novas features"
+    },
+    "errors": {
+      "loadUser": "Erro ao carregar informações do usuário.",
+      "noUser": "Usuário não encontrado.",
+      "startCheckout": "Erro ao iniciar checkout.",
+      "connectStripe": "Erro ao conectar com o Stripe.",
+      "portalError": "Erro ao abrir o portal de gerenciamento."
+    }
+  },
+  "Cancel": {
+    "title": "Cancelar assinatura",
+    "status": "Status atual",
+    "nextBilling": "Próxima cobrança:",
+    "warning": "Ao cancelar, você manterá o acesso até o final do ciclo atual.",
+    "cancelBtn": "Cancelar assinatura",
+    "cancelSuccess": "Assinatura cancelada com sucesso.",
+    "cancelError": "Erro ao cancelar assinatura.",
+    "loadError": "Erro ao carregar dados da assinatura.",
+    "noSubscription": "Nenhuma assinatura ativa encontrada.",
+    "modal": {
+      "title": "Deseja realmente cancelar?",
+      "desc": "Você ainda poderá usar o Quibly até o fim do seu ciclo atual.",
+      "keep": "Manter plano",
+      "confirm": "Sim, cancelar",
+      "canceling": "Cancelando..."
+    }
   }
 }

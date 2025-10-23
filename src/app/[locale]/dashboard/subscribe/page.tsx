@@ -1,16 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { toast } from "sonner";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
+import { api } from "@/lib/api";
+import { CreditCard, Crown } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl"; // ✅ import do locale
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type Subscription = {
   status: string;
   stripeSubscriptionId: string | null;
   stripePriceId: string | null;
+  current_period_end?: string | null;
 };
 
 type User = {
@@ -18,17 +28,28 @@ type User = {
   name: string | null;
   email: string | null;
   plan: "FREE" | "PREMIUM";
+  language?: "PT" | "EN";
   Subscription?: Subscription | null;
 };
 
 export default function SubscribePage() {
+  const t = useTranslations("Subscribe");
+  const locale = useLocale(); // ✅ pega locale atual (pt / en)
   const { user: firebaseUser, loading: authLoading } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [currency, setCurrency] = useState<"BRL" | "USD">("USD");
   const [interval, setInterval] = useState<"monthly" | "yearly">("monthly");
   const [processing, setProcessing] = useState(false);
 
-  // 🔹 Detecta localização
+  // ✅ Detect locale preferido do usuário (fallback pro idioma do app)
+  const userLocale =
+    user?.language === "PT"
+      ? "pt"
+      : user?.language === "EN"
+      ? "en"
+      : locale || "en";
+
+  // 🔹 Detect currency
   useEffect(() => {
     async function detectCurrency() {
       try {
@@ -42,48 +63,83 @@ export default function SubscribePage() {
     detectCurrency();
   }, []);
 
-  // 🔹 Busca usuário autenticado do Prisma (via token Firebase)
+  // 🔹 Fetch user from backend
   useEffect(() => {
     if (authLoading || !firebaseUser) return;
-
     api
       .get("/users/me")
       .then((res) => setUser(res.data))
-      .catch(() => toast.error("Erro ao carregar informações do usuário"));
-  }, [firebaseUser, authLoading]);
+      .catch(() => toast.error(t("errors.loadUser")));
+  }, [firebaseUser, authLoading, t]);
 
+  // 🔹 Criar checkout
   const handleSubscribe = async () => {
-    if (!user) {
-      toast.error("Usuário não encontrado.");
-      return;
-    }
-
+    if (!user) return toast.error(t("errors.noUser"));
     setProcessing(true);
     try {
       const { data } = await api.post("/stripe/checkout", {
         userId: user.id,
         currency,
         interval,
-        
       });
-
       if (data.url) window.location.href = data.url;
-      else toast.error("Erro ao iniciar checkout.");
-    } catch (error) {
-      console.error(error);
-      toast.error("Erro ao conectar com o Stripe.");
+      else toast.error(t("errors.startCheckout"));
+    } catch {
+      toast.error(t("errors.connectStripe"));
     } finally {
       setProcessing(false);
     }
   };
 
-  if (authLoading || !user) {
+  // 🔹 Gerenciar / Cancelar assinatura
+  const handleManage = () => {
+    if (!user) return toast.error(t("errors.noUser"));
+
+    // ✅ Redireciona direto para a página de cancelamento
+    window.location.href = `/${userLocale}/dashboard/subscribe/cancel`;
+  };
+
+  const isLoading = authLoading || !user;
+
+  // 🔹 Skeleton de carregamento
+  if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center text-gray-400">
-        Carregando dados da assinatura...
+      <div className="flex items-center justify-center min-h-screen bg-[#0F1117] p-4">
+        <Card className="max-w-lg w-full bg-[#1C1F27] border border-[#262B35] shadow-2xl p-6">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-3">
+              <Skeleton className="w-10 h-10 rounded-full" />
+            </div>
+            <Skeleton className="h-6 w-48 mx-auto rounded-md" />
+          </CardHeader>
+
+          <CardContent className="space-y-3 mt-6">
+            <Skeleton className="h-4 w-3/4 mx-auto rounded" />
+            <Skeleton className="h-4 w-2/3 mx-auto rounded" />
+
+            <div className="flex justify-center gap-2 mt-4">
+              <Skeleton className="h-9 w-20 rounded-md" />
+              <Skeleton className="h-9 w-20 rounded-md" />
+            </div>
+
+            <Skeleton className="h-6 w-32 mx-auto mt-4 rounded-md" />
+            <div className="space-y-2 mt-6">
+              <Skeleton className="h-4 w-5/6 mx-auto" />
+              <Skeleton className="h-4 w-2/3 mx-auto" />
+              <Skeleton className="h-4 w-3/4 mx-auto" />
+            </div>
+          </CardContent>
+
+          <CardFooter className="mt-6">
+            <Skeleton className="h-10 w-full rounded-md" />
+          </CardFooter>
+        </Card>
       </div>
     );
   }
+
+  const isPremium =
+    user.plan === "PREMIUM" || user.Subscription?.status === "active";
 
   const getPrice = () => {
     if (currency === "BRL") {
@@ -92,70 +148,82 @@ export default function SubscribePage() {
     return interval === "yearly" ? "$69.99 / year" : "$9.99 / month";
   };
 
-  const isPremium = user.plan === "PREMIUM" || user.Subscription?.status === "active";
+  const nextBilling = user.Subscription?.current_period_end
+    ? new Date(user.Subscription.current_period_end).toLocaleDateString()
+    : null;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#0F1117] text-white p-4">
-      <Card className="max-w-md w-full bg-[#1C1F27] border border-[#262B35]">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            {isPremium ? "🎉 Você já é Premium!" : "Assine o Quibly PRO"}
+      <Card className="max-w-lg w-full bg-[#1C1F27] border border-[#262B35] shadow-2xl">
+        <CardHeader className="text-center">
+          <Crown className="w-10 h-10 mx-auto text-[#6C63FF]" />
+          <CardTitle className="text-2xl text-white font-bold mt-2">
+            {isPremium ? t("titlePremium") : t("titleFree")}
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="text-center space-y-4">
+        <CardContent className="space-y-4 text-center">
           {!isPremium ? (
             <>
-              <p className="text-gray-400">
-                Desbloqueie geração ilimitada de quizzes e flashcards.
-              </p>
+              <p className="text-gray-400">{t("description")}</p>
 
               <div className="flex justify-center gap-2 mt-2">
                 <Button
                   variant={interval === "monthly" ? "default" : "outline"}
                   onClick={() => setInterval("monthly")}
                 >
-                  Mensal
+                  {t("monthly")}
                 </Button>
                 <Button
                   variant={interval === "yearly" ? "default" : "outline"}
                   onClick={() => setInterval("yearly")}
                 >
-                  Anual
+                  {t("yearly")}
                 </Button>
               </div>
 
-              <p className="text-xl font-semibold text-[#6C63FF] mt-3">{getPrice()}</p>
+              <p className="text-xl font-semibold text-[#6C63FF] mt-3">
+                {getPrice()}
+              </p>
 
               <ul className="text-left text-gray-300 list-disc list-inside mt-4">
-                <li>✨ Quizzes ilimitados</li>
-                <li>📚 Flashcards sem limite por documento</li>
-                <li>🚀 Acesso antecipado a novas features</li>
+                <li>✨ {t("features.unlimitedQuizzes")}</li>
+                <li>📚 {t("features.unlimitedFlashcards")}</li>
+                <li>🚀 {t("features.earlyAccess")}</li>
               </ul>
             </>
           ) : (
-            <p className="text-green-400">
-              Você tem acesso total a todos os recursos do Quibly. 🌟
-            </p>
+            <>
+              <p className="text-green-400">{t("activePlan")}</p>
+              {nextBilling && (
+                <p className="text-gray-400 text-sm">
+                  {t("nextBilling")}{" "}
+                  <span className="text-white">{nextBilling}</span>
+                </p>
+              )}
+            </>
           )}
         </CardContent>
 
-        <CardFooter>
+        <CardFooter className="flex flex-col gap-2">
           {!isPremium ? (
             <Button
               disabled={processing}
               onClick={handleSubscribe}
               className="bg-[#6C63FF] hover:bg-[#5750E5] text-white w-full"
             >
-              {processing ? "Redirecionando..." : `Assinar ${getPrice()}`}
+              {processing
+                ? t("redirecting")
+                : `${t("subscribeBtn")} ${getPrice()}`}
             </Button>
           ) : (
             <Button
-              variant="outline"
-              disabled
-              className="border-gray-600 text-gray-300 w-full"
+              onClick={handleManage}
+              disabled={processing}
+              className="bg-[#2E3340] hover:bg-[#3A3F4F] text-white w-full"
             >
-              Plano Premium Ativo
+              <CreditCard className="w-4 h-4 mr-2" />
+              {t("manageBtn")}
             </Button>
           )}
         </CardFooter>

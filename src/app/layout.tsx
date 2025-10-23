@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { Toaster } from "sonner";
-import { useAnalytics } from "@/hooks/useAnalytics";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,25 +16,43 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Quibly",
   description: "Your teacher",
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+    other: [
+      {
+        rel: "android-chrome",
+        url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+      },
+      {
+        rel: "android-chrome",
+        url: "/android-chrome-512x512.png",
+        sizes: "512x512",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
-
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
-    <html>
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        
       >
+        {children}
 
-        
-    {children}
-      <Toaster
+        <Toaster
           richColors
           closeButton
           position="top-right"

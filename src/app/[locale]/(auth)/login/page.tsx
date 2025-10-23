@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { api } from "@/lib/api";
+import { auth } from "@/lib/firebase";
 import {
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
-  GoogleAuthProvider,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { api } from "@/lib/api";
-import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -21,7 +22,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  
 
   const syncUser = async (token: string, name?: string) => {
     try {
@@ -75,7 +75,7 @@ export default function LoginPage() {
       {/* Logo + Title */}
       <div className="text-center">
         <h1 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-          Quibly <span className="text-blue-500 text-4xl">📘</span>
+          <Image src="/favicon.svg" alt="Logo" width={50} height={50} />
         </h1>
         <p className="text-gray-400 text-sm mt-1">{t("subtitle")}</p>
       </div>
@@ -140,7 +140,10 @@ export default function LoginPage() {
       {/* Footer */}
       <p className="text-center text-sm text-gray-400">
         {t("noAccount")}{" "}
-        <Link href={`/${locale}/register`} className="text-blue-500 hover:underline">
+        <Link
+          href={`/${locale}/register`}
+          className="text-blue-500 hover:underline"
+        >
           {t("register")}
         </Link>
       </p>
