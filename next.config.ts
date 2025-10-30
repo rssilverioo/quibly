@@ -31,6 +31,16 @@ const nextConfig: NextConfig = {
         hostname: "lh3.googleusercontent.com", // ✅ necessário para login Google
         pathname: "/**",
       },
+          {
+        protocol: 'https',
+        hostname: 'plus.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
     ],
   },
 };
