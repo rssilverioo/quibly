@@ -6,7 +6,7 @@ export default getRequestConfig(async ({ locale }) => {
 
   let messages;
   try {
-    messages = (await import(`./src/messages/${currentLocale}.json`)).default;
+    messages = (await import(`./src/app/messages/${currentLocale}.json`)).default;
   } catch {
     // fallback de segurança caso não exista o arquivo do idioma
     messages = (await import(`./src/app/messages/pt.json`)).default;
