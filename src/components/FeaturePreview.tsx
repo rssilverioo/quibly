@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image';
 import {  FiUpload } from 'react-icons/fi'
 import { GiBrain } from "react-icons/gi";
 import { RiQrScanLine } from "react-icons/ri";
@@ -63,10 +64,12 @@ const FeaturePreview = () => {
           {/* Preview 1 */}
           <div className="glass-dark rounded-2xl p-8 transition-transform duration-300 border border-blue-100 dark:border-blue-900">
             <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-lg mb-6 flex items-center justify-center">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=800&h=450"
                 alt="AI creating flashcards from your lessons - Quibly"
                 className="rounded-lg w-full h-full object-cover"
+                width={800}
+                height={450}
               />
             </div>
             <h3 className="text-xl font-semibold mb-3">
@@ -80,10 +83,12 @@ const FeaturePreview = () => {
           {/* Preview 2 */}
           <div className="glass-dark rounded-2xl p-8 transition-transform duration-300 border border-blue-100 dark:border-blue-900">
             <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-lg mb-6 flex items-center justify-center">
-              <img
+              <Image
                 src="https://plus.unsplash.com/premium_photo-1745835775085-866d65d92daf?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170"
                 alt="  AI transforming your content into flashcards & quizzes"
                 className="rounded-lg w-full h-full object-cover"
+                width={800}
+                height={450}
               />
             </div>
             <h3 className="text-xl font-semibold mb-3">
