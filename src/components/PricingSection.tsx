@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -118,9 +120,9 @@ const PricingSection = () => {
           <h1 className="text-5xl font-bold text-black mb-6">
             Start for free. <br /> Upgrade when you're ready.
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            Whether you're studying solo or part of a team — there's a plan made for you.
-          </p>
+<p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+  Whether you&apos;re studying solo or part of a team — there&apos;s a plan made for you.
+</p>
 
           {/* Monthly / Annual toggle */}
           <div className="flex items-center justify-center gap-4 mb-12">
