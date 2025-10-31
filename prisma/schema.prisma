@@ -23,11 +23,13 @@ model User {
   language    Language @default(PT)
   photoUrl    String?
 
+  lastDailyCreditAt DateTime? // ✅ <- ADICIONE ISSO
+
   // Relations
   documents    Document[]
   quizzes      Quiz[]
   flashcards   Flashcard[]
-  sets         FlashcardSet[] // ✅ renomeado (antes FlashcardSet)
+  sets         FlashcardSet[]
   Subscription Subscription?
 }
 

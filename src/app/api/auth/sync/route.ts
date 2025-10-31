@@ -22,19 +22,36 @@ export async function POST(req: NextRequest) {
     const email = decoded.email?.toLowerCase() ?? null;
     const name = body.name ?? decoded.name ?? null;
 
-    const user = await prisma.user.upsert({
-      where: { firebaseUid: decoded.uid },
-      update: {
-        email: email ?? undefined,
-        name: name ?? undefined,
-      },
-      create: {
-        firebaseUid: decoded.uid,
-        email,
-        name,
-        plan: "FREE",
+    // 🔍 1. Verifica se já existe usuário com mesmo UID ou e-mail
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [{ firebaseUid: decoded.uid }, { email }],
       },
     });
+
+    let user;
+    if (existingUser) {
+      // 🔁 Atualiza se já existe
+      user = await prisma.user.update({
+        where: { id: existingUser.id },
+        data: {
+          firebaseUid: decoded.uid,
+          email,
+          name,
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      // 🆕 Cria se não existir
+      user = await prisma.user.create({
+        data: {
+          firebaseUid: decoded.uid,
+          email,
+          name,
+          plan: "FREE",
+        },
+      });
+    }
 
     return NextResponse.json({
       id: user.id,

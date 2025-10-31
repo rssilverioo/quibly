@@ -6,43 +6,29 @@ import createIntlMiddleware from "next-intl/middleware";
 const intlMiddleware = createIntlMiddleware({
   locales: ["pt", "en"],
   defaultLocale: "pt",
-  localePrefix: "never",
 });
 
 export async function middleware(req: NextRequest) {
+  const res = intlMiddleware(req);
   const { pathname } = req.nextUrl;
 
   // 🔓 Rotas públicas
   const isPublic =
-    pathname === "/" ||
-    pathname.startsWith("/manifesto") ||
-    pathname.startsWith("/pricing") ||
-    pathname.startsWith("/privacy") ||
-    pathname.startsWith("/terms") ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/register") ||
+    pathname.startsWith("/manifesto") ||
+    pathname.startsWith("/pricing") ||
+    pathname.startsWith("/policy-privacy") ||
+    pathname.startsWith("/terms-of-use") ||
+    pathname === "/" ||
     pathname.startsWith("/api/public");
 
-  // 🔒 Rotas protegidas (dashboard / documentos)
-  const isProtected =
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/api/documents");
+  if (isPublic) return res;
 
-  // ⚙️ 1. Evita loop de redirecionamento na home
-  const hasLocaleCookie = req.cookies.has("NEXT_LOCALE");
-  if (!hasLocaleCookie && pathname === "/") {
-    const res = NextResponse.next();
-    res.cookies.set("NEXT_LOCALE", "pt", { path: "/" });
-    return res;
-  }
-
-  // ⚙️ 2. Se for rota pública → apenas aplica intlMiddleware
-  if (isPublic) return intlMiddleware(req);
-
-  // ⚙️ 3. Se for rota protegida → valida token
-  if (isProtected) {
+  // 🔒 Protege o dashboard
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/documents")) {
     const token =
-      req.cookies.get("token")?.value ||
+      req.cookies.get("token")?.value || // 🔹 cookie salvo após login
       req.headers.get("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
@@ -52,17 +38,18 @@ export async function middleware(req: NextRequest) {
 
     try {
       await adminAuth.verifyIdToken(token);
-      return intlMiddleware(req);
+      return res;
     } catch (err) {
       console.error("[Middleware] Token inválido:", err);
       return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
-  // ⚙️ 4. Qualquer outra rota → aplica intl normalmente
-  return intlMiddleware(req);
+  return res;
 }
 
 export const config = {
-  matcher: ["/((?!_next|.*\\..*|api/public).*)"],
+  matcher: [
+    "/((?!_next|.*\\..*|api/public).*)", // protege tudo, exceto assets e rotas públicas
+  ],
 };
