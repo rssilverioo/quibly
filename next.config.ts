@@ -1,5 +1,5 @@
-import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./next-intl.config.ts");
 
@@ -31,15 +31,20 @@ const nextConfig: NextConfig = {
         hostname: "lh3.googleusercontent.com", // ✅ necessário para login Google
         pathname: "/**",
       },
-          {
-        protocol: 'https',
-        hostname: 'plus.unsplash.com',
-        pathname: '/**',
+      {
+        protocol: "https",
+        hostname: "plus.unsplash.com",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "v3b.fal.media",
+        pathname: "/**",
       },
     ],
   },
