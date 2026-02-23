@@ -17,7 +17,7 @@ const Footer = () => {
     { name: t('manifesto'), href: "/manifesto" },
     { name: t('careers'), href: "/careers", disabled: true },
     { name: t('terms'), href: "/terms" },
-    { name: t('privacy'), href: "/privacy-policy" },
+    { name: t('privacy'), href: "/privacy" },
   ];
 
   const renderLink = (link: any) => {
