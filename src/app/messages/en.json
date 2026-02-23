@@ -164,5 +164,90 @@
       "confirm": "Yes, cancel",
       "canceling": "Canceling..."
     }
+  },
+  "Landing": {
+    "header": {
+      "howItWorks": "How it works",
+      "pricing": "Pricing",
+      "enterprise": "Enterprise",
+      "faq": "FAQ",
+      "careers": "Careers",
+      "login": "Log in",
+      "signup": "Sign up"
+    },
+    "hero": {
+      "headlineTop": "You don't have a study problem.",
+      "headlineBottom": "You have a method problem.",
+      "subtitle": "Upload any PDF or notes — Quibly's AI creates flashcards and quizzes in seconds. Daily streaks and competitive leagues make sure you actually study. Every day.",
+      "downloadApple": "Download for Apple",
+      "downloadAndroid": "Download for Android"
+    },
+    "learn": {
+      "sectionLabel": "Your study gym.",
+      "headline": "Train your brain",
+      "headlineBreak": "like you train your body."
+    },
+    "steps": {
+      "step1Title": "Lock in with Pomodoro",
+      "step1Desc": "Focused study sessions with built-in breaks. No scrolling, no distractions — just reps for your brain.",
+      "step2Title": "Compete in leagues",
+      "step2Desc": "Challenge your friends in weekly and monthly leagues. Rankings, streaks, and bragging rights. Studying alone is over.",
+      "step3Title": "Track your gains",
+      "step3Desc": "Streaks, study hours, sessions completed — your stats tell the real story. Consistency beats talent."
+    },
+    "features": {
+      "card1Title": "Flashcards that actually stick",
+      "card1Desc": "AI identifies what matters most in your material and creates flashcards with spaced repetition built in. Less time studying, more time remembering.",
+      "card2Title": "Quizzes that expose your blind spots",
+      "card2Desc": "Automatically generated from your content. Find out what you really know — and what you just think you know — before the exam does."
+    },
+    "oneTool": {
+      "headline": "One app. Every subject. Zero excuses.",
+      "paragraph1": "Biology, law, history, engineering — Quibly doesn't care what you study. Upload a PDF, slides, screenshots, or type your notes directly. The AI adapts to any subject and creates personalized study material in seconds.",
+      "paragraph2": "Streaks keep you accountable. Leagues keep you motivated. The only thing left is you showing up."
+    },
+    "faq": {
+      "headline": "Got questions? We've got answers.",
+      "subtitle": "Everything you need to know before your first streak.",
+      "q1": "What exactly does Quibly do?",
+      "a1": "Quibly takes your study material — PDFs, slides, screenshots, or typed notes — and uses AI to generate flashcards and quizzes automatically. You study using spaced repetition and active recall — proven methods that help you remember more in less time.",
+      "q2": "What file formats can I upload?",
+      "a2": "PDF, images (JPG/PNG), slides (PPT/PPTX), and typed notes. We're also working on imports from Notion, Google Docs, and Apple Notes.",
+      "q3": "What are streaks and leagues?",
+      "a3": "Streaks track your daily study consistency — study every day to build your streak and see it on a visual calendar. Leagues are competitive rankings where you compete against other students weekly and monthly. It's the push you need to stay consistent.",
+      "q4": "Is Quibly free?",
+      "a4": "Yes. The Free plan gives you monthly uploads and flashcard generations to get started — no credit card required. The Pro plan unlocks unlimited uploads, advanced AI features, and priority processing.",
+      "q5": "Does Quibly work in Portuguese?",
+      "a5": "Yes! Quibly supports English and Portuguese (BR), and the AI understands and generates content in 50+ languages.",
+      "q6": "Is my data safe?",
+      "a6": "Absolutely. We use end-to-end encryption and follow GDPR and LGPD regulations. Your documents are private and never used to train AI models.",
+      "q7": "Can I cancel my subscription anytime?",
+      "a7": "Yes, cancel anytime with zero fees. You keep Pro access until the end of your billing cycle.",
+      "q8": "Is there a file size limit?",
+      "a8": "Free accounts support files up to 20MB and 50 pages. Pro users get larger uploads with no page limit.",
+      "stillHaveQuestions": "Still have questions?",
+      "supportText": "We're here to help you get the most out of Quibly.",
+      "contactSupport": "Contact Support"
+    },
+    "cta": {
+      "headline": "While you're thinking about it, someone else is already studying.",
+      "subtitle": "Join thousands of students who turned wasted study time into real results. Free to start — your first streak is waiting.",
+      "trustLine": "Free trial • No credit card required • iOS & Android"
+    },
+    "footer": {
+      "tagline": "AI-powered study tools that make you unstoppable.",
+      "product": "Product",
+      "features": "Features",
+      "download": "Download",
+      "pricing": "Pricing",
+      "aiModes": "AI Modes",
+      "company": "Company",
+      "manifesto": "Manifesto",
+      "careers": "Careers",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "contact": "Contact",
+      "copyright": "© 2025 Quibly — All rights reserved."
+    }
   }
 }

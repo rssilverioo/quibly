@@ -5,8 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { FaApple } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { GrAndroid } from "react-icons/gr";
+import { useTranslations } from 'next-intl';
 
 const DownloadSection = () => {
+  const t = useTranslations('Landing.cta');
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -49,11 +51,10 @@ const DownloadSection = () => {
             {/* Textos */}
             <div className="mb-12 relative z-10">
               <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-black mb-6 leading-tight">
-             Level up your study routine with Quibly.
+                {t('headline')}
               </h2>
               <p className="text-xl text-gray-300 dark:text-gray-700 leading-relaxed max-w-3xl mx-auto">
-            Turn your content into flashcards and quizzes — zero effort, maximum learning. — powered by{' '}
-                <span className="font-semibold text-white dark:text-black">Quibly</span>. Try it free today.
+                {t('subtitle')}
               </p>
             </div>
 
@@ -71,7 +72,7 @@ const DownloadSection = () => {
 
               <div className="relative">
                 <Button className="bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 border border-white/20 dark:border-black/20 text-white dark:text-black px-8 py-6 rounded-2xl text-lg font-medium transition-all duration-300 backdrop-blur-sm min-w-[200px] flex items-center gap-3">
-                  <GrAndroid  className="w-6 h-6" />
+                  <GrAndroid className="w-6 h-6" />
                   Android
                 </Button>
                 <Badge className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
@@ -82,7 +83,7 @@ const DownloadSection = () => {
 
             {/* Rodapé */}
             <p className="text-gray-400 dark:text-gray-600 text-sm mt-8 relative z-10">
-              Free trial • No credit card required • Available on all platforms
+              {t('trustLine')}
             </p>
           </div>
         </div>

@@ -163,5 +163,90 @@
       "confirm": "Sim, cancelar",
       "canceling": "Cancelando..."
     }
+  },
+  "Landing": {
+    "header": {
+      "howItWorks": "Como funciona",
+      "pricing": "Preços",
+      "enterprise": "Empresas",
+      "faq": "FAQ",
+      "careers": "Carreiras",
+      "login": "Entrar",
+      "signup": "Criar conta"
+    },
+    "hero": {
+      "headlineTop": "Você não tem um problema de estudo.",
+      "headlineBottom": "Você tem um problema de método.",
+      "subtitle": "Envie qualquer PDF ou anotação — a IA do Quibly cria flashcards e quizzes em segundos. Streaks diários e ligas competitivas garantem que você realmente estude. Todo dia.",
+      "downloadApple": "Baixar para Apple",
+      "downloadAndroid": "Baixar para Android"
+    },
+    "learn": {
+      "sectionLabel": "Sua academia de estudos.",
+      "headline": "Treine seu cérebro",
+      "headlineBreak": "como treina seu corpo."
+    },
+    "steps": {
+      "step1Title": "Foque com Pomodoro",
+      "step1Desc": "Sessões de estudo focadas com pausas programadas. Sem scroll, sem distração — só reps pro seu cérebro.",
+      "step2Title": "Dispute nas ligas",
+      "step2Desc": "Desafie seus amigos em ligas semanais e mensais. Rankings, streaks e direito de se gabar. Estudar sozinho acabou.",
+      "step3Title": "Acompanhe sua evolução",
+      "step3Desc": "Streaks, horas de estudo, sessões completas — seus números contam a história real. Consistência vence talento."
+    },
+    "features": {
+      "card1Title": "Flashcards que realmente fixam",
+      "card1Desc": "A IA identifica o que importa no seu material e cria flashcards com repetição espaçada embutida. Menos tempo estudando, mais tempo lembrando.",
+      "card2Title": "Quizzes que revelam seus pontos cegos",
+      "card2Desc": "Gerados automaticamente do seu conteúdo. Descubra o que você realmente sabe — e o que só acha que sabe — antes que a prova mostre."
+    },
+    "oneTool": {
+      "headline": "Um app. Toda matéria. Zero desculpas.",
+      "paragraph1": "Biologia, direito, história, engenharia — o Quibly não liga pro que você estuda. Envie um PDF, slides, screenshots ou digite suas anotações. A IA se adapta a qualquer matéria e cria material de estudo personalizado em segundos.",
+      "paragraph2": "Streaks te mantêm na linha. Ligas te mantêm motivado. Só falta você aparecer."
+    },
+    "faq": {
+      "headline": "Tem perguntas? A gente tem respostas.",
+      "subtitle": "Tudo que você precisa saber antes do seu primeiro streak.",
+      "q1": "O que exatamente o Quibly faz?",
+      "a1": "O Quibly pega seu material de estudo — PDFs, slides, screenshots ou anotações digitadas — e usa IA para gerar flashcards e quizzes automaticamente. Você estuda com repetição espaçada e recall ativo — métodos comprovados que te ajudam a lembrar mais em menos tempo.",
+      "q2": "Quais formatos de arquivo posso enviar?",
+      "a2": "PDF, imagens (JPG/PNG), slides (PPT/PPTX) e anotações digitadas. Também estamos trabalhando na importação do Notion, Google Docs e Apple Notes.",
+      "q3": "O que são streaks e ligas?",
+      "a3": "Streaks rastreiam sua consistência diária de estudo — estude todo dia pra manter seu streak e veja tudo no calendário visual. Ligas são rankings competitivos onde você disputa contra outros estudantes semanal e mensalmente. É o empurrão que faltava pra você ser consistente.",
+      "q4": "O Quibly é gratuito?",
+      "a4": "Sim. O plano Free dá uploads e gerações mensais de flashcards pra começar — sem pedir cartão de crédito. O plano Pro desbloqueia uploads ilimitados, recursos avançados de IA e processamento prioritário.",
+      "q5": "O Quibly funciona em português?",
+      "a5": "Sim! O Quibly suporta inglês e português (BR), e a IA entende e gera conteúdo em mais de 50 idiomas.",
+      "q6": "Meus dados estão seguros?",
+      "a6": "Com certeza. Usamos criptografia de ponta a ponta e seguimos as regulamentações GDPR e LGPD. Seus documentos são privados e nunca são usados para treinar modelos de IA.",
+      "q7": "Posso cancelar minha assinatura a qualquer momento?",
+      "a7": "Sim, cancele quando quiser, sem taxas. Você mantém o acesso Pro até o fim do seu ciclo de cobrança.",
+      "q8": "Existe limite de tamanho de arquivo?",
+      "a8": "Contas gratuitas suportam arquivos de até 20MB e 50 páginas. Usuários Pro podem enviar documentos maiores sem limite de páginas.",
+      "stillHaveQuestions": "Ainda tem dúvidas?",
+      "supportText": "Estamos aqui pra te ajudar a tirar o máximo do Quibly.",
+      "contactSupport": "Falar com suporte"
+    },
+    "cta": {
+      "headline": "Enquanto você pensa, alguém já está estudando.",
+      "subtitle": "Junte-se a milhares de estudantes que transformaram tempo perdido em resultado real. Grátis pra começar — seu primeiro streak está esperando.",
+      "trustLine": "Grátis • Sem cartão de crédito • iOS & Android"
+    },
+    "footer": {
+      "tagline": "Ferramentas de estudo com IA que te tornam imparável.",
+      "product": "Produto",
+      "features": "Funcionalidades",
+      "download": "Download",
+      "pricing": "Preços",
+      "aiModes": "Modos IA",
+      "company": "Empresa",
+      "manifesto": "Manifesto",
+      "careers": "Carreiras",
+      "terms": "Termos",
+      "privacy": "Privacidade",
+      "contact": "Contato",
+      "copyright": "© 2025 Quibly — Todos os direitos reservados."
+    }
   }
 }

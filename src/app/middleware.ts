@@ -4,8 +4,8 @@ import { adminAuth } from "@/lib/firebaseAdmin";
 import createIntlMiddleware from "next-intl/middleware";
 
 const intlMiddleware = createIntlMiddleware({
-  locales: ["pt", "en"],
-  defaultLocale: "pt",
+  locales: ["en", "pt"],
+  defaultLocale: "en",
 });
 
 export async function middleware(req: NextRequest) {

@@ -6,7 +6,7 @@ import { Menu, X } from 'lucide-react'
 import { FaArrowCircleRight } from 'react-icons/fa'
 import LogoQuibly from '@/app/assets/logo-quibly-white'
 import Link from 'next/link'
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from 'next/navigation'
 
 const Header = () => {
@@ -14,6 +14,8 @@ const Header = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const locale = useLocale();
   const route = useRouter();
+  const t = useTranslations('Landing.header');
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
@@ -29,11 +31,11 @@ const Header = () => {
   }, [isMobileOpen])
 
   const menuItems = [
-    { href: '/home/#features', label: 'How it works' },
-    { href: '/pricing', label: 'Pricing' },
-    { href: '/home/#enterprise', label: 'Enterprise' },
-    { href: '/home/#faq', label: 'FAQ' },
-    { href: '/careers', label: 'Careers', disabled: true },
+    { href: '/home/#features', label: t('howItWorks') },
+    { href: '/pricing', label: t('pricing') },
+    { href: '/home/#enterprise', label: t('enterprise') },
+    { href: '/home/#faq', label: t('faq') },
+    { href: '/careers', label: t('careers'), disabled: true },
   ]
 
   const textColor = isScrolled ? 'text-black dark:text-white' : 'text-black dark:text-white'
@@ -82,10 +84,10 @@ const Header = () => {
               href={`/${locale}/login`}
               className="text-sm font-medium transition hover:-translate-y-1 text-black hover:text-neutral-800 dark:text-white dark:hover:text-neutral-300"
             >
-              Log in
+              {t('login')}
             </Link>
             <Button onClick={() =>  route.push(`/${locale}/register`)}  className="cursor- transition font-medium text-sm px-6 py-2 rounded-full bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
-              Sign up <FaArrowCircleRight className="ml-2 -rotate-45" />
+              {t('signup')} <FaArrowCircleRight className="ml-2 -rotate-45" />
             </Button>
           </div>
 
@@ -139,13 +141,13 @@ const Header = () => {
             onClick={() => setIsMobileOpen(false)}
             className="text-sm text-black dark:text-white hover:text-neutral-800 dark:hover:text-gray-300"
           >
-            Log in
+            {t('login')}
           </Link>
           <Button
             onClick={() =>  route.push(`/${locale}/register`)}
             className="bg-black  text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 px-6 py-2 rounded-full text-sm"
           >
-            Sign up →
+            {t('signup')} →
           </Button>
         </div>
       </div>

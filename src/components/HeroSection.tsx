@@ -4,8 +4,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FaApple } from 'react-icons/fa';
 import { GrAndroid } from "react-icons/gr";
+import { useTranslations } from 'next-intl';
 
 const HeroSection = () => {
+  const t = useTranslations('Landing.hero');
+
   return (
     <section
       id="hero"
@@ -20,13 +23,12 @@ const HeroSection = () => {
       {/* Conteúdo */}
       <div className="relative z-10 container mx-auto px-6 pt-32 pb-20 text-center">
         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight">
-   It’s already done.<br />
-          <span className="text-gray-700 dark:text-gray-300">You just didn’t ask Quibly yet.</span>
+          {t('headlineTop')}<br />
+          <span className="text-gray-700 dark:text-gray-300">{t('headlineBottom')}</span>
         </h1>
 
         <p className="text-gray-700 dark:text-gray-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
-          Turn any class PDF into learning materials,<br /> Flashcards and quizzes generated instantly — study smarter, not harder.
-
+          {t('subtitle')}
         </p>
 
         {/* Card com sombra e glow */}
@@ -36,27 +38,27 @@ const HeroSection = () => {
 
           {/* Botões */}
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 relative z-10">
-         <Button
-            size="lg"
-            className="bg-black dark:bg-white text-white dark:text-black text-base md:text-lg rounded-full p-6 transform transition hover:-translate-y-1 hover:bg-opacity-90"
-          >
-            <FaApple className="mr-2 text-2xl" />
-            Download for Apple
-            <Badge className="ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-              BETA
-            </Badge>
-          </Button>
+            <Button
+              size="lg"
+              className="bg-black dark:bg-white text-white dark:text-black text-base md:text-lg rounded-full p-6 transform transition hover:-translate-y-1 hover:bg-opacity-90"
+            >
+              <FaApple className="mr-2 text-2xl" />
+              {t('downloadApple')}
+              <Badge className="ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                BETA
+              </Badge>
+            </Button>
 
-          <Button
-            size="lg"
-            className="bg-black dark:bg-white text-white dark:text-black text-base md:text-lg rounded-full p-6 transform transition hover:-translate-y-1 hover:bg-opacity-90"
-          >
-            <GrAndroid  className="mr-2 text-2xl" />
-            Download for Android
-            <Badge className="ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-              BETA
-            </Badge>
-          </Button>
+            <Button
+              size="lg"
+              className="bg-black dark:bg-white text-white dark:text-black text-base md:text-lg rounded-full p-6 transform transition hover:-translate-y-1 hover:bg-opacity-90"
+            >
+              <GrAndroid className="mr-2 text-2xl" />
+              {t('downloadAndroid')}
+              <Badge className="ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                BETA
+              </Badge>
+            </Button>
           </div>
         </div>
       </div>

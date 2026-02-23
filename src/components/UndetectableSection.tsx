@@ -2,8 +2,11 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 
 export default function OneToolSection() {
+  const t = useTranslations('Landing.oneTool');
+
   return (
     <section className="w-full py-24 px-6 md:px-12 relative overflow-hidden
       bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]
@@ -32,7 +35,7 @@ export default function OneToolSection() {
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-100 dark:text-gray-900 drop-shadow-md dark:drop-shadow-none">
-          One Tool. Any Class.
+            {t('headline')}
           </h2>
         </div>
 
@@ -40,21 +43,11 @@ export default function OneToolSection() {
           {/* Texto lateral */}
           <div className="flex-1 max-w-lg text-center md:text-left">
             <p className="text-gray-300 dark:text-gray-700 text-lg md:text-xl leading-relaxed">
-             Quibly works with everything you study.
-Upload a PDF, slides, screenshots, or typed notes — our AI transforms it into flashcards and mind maps instantly.
+              {t('paragraph1')}
               <br /><br />
-            No setup, no integrations, no friction.
+              {t('paragraph2')}
             </p>
           </div>
-
-          {/* Grid de ícones */}
-          {/* <div className="flex-1 grid grid-cols-3 grid-rows-2 gap-4 max-w-md mx-auto">
-            <GridIcon src="/assets/icons/pdf.png" alt="PDF" className="row-span-2" />
-            <GridIcon src="/assets/icons/googlemeet.svg" alt="Google Meet" className="col-span-2" />
-            <GridIcon src="/assets/icons/zoom.svg" alt="Zoom" className="col-span-2" />
-            <GridIcon src="/assets/icons/teams.svg" alt="Teams" />
-            <GridIcon src="/assets/icons/discord.svg" alt="Discord" />
-          </div> */}
         </div>
       </div>
     </section>
