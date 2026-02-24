@@ -19,7 +19,9 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith("/manifesto") ||
     pathname.startsWith("/pricing") ||
     pathname.startsWith("/policy-privacy") ||
+    pathname.startsWith("/privacy") ||
     pathname.startsWith("/terms") ||
+    pathname.startsWith("/join") ||
     pathname === "/" ||
     pathname.startsWith("/api/public");
 
