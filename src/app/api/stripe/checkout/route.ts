@@ -8,9 +8,16 @@ function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!);
 }
 
+const PRICE_MAP: Record<string, string | undefined> = {
+  "pt-monthly": process.env.STRIPE_PRICE_ID_PRO_BRL,
+  "en-monthly": process.env.STRIPE_PRICE_ID_PRO_USD,
+  "pt-yearly": process.env.STRIPE_PRICE_ID_PRO_BRL_YEARLY,
+  "en-yearly": process.env.STRIPE_PRICE_ID_PRO_USD_YEARLY,
+};
+
 export async function POST(req: Request) {
   try {
-    const { userId, locale } = await req.json();
+    const { userId, locale, billing = "monthly" } = await req.json();
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
@@ -18,10 +25,8 @@ export async function POST(req: Request) {
     }
 
     const userLocale = locale || (user.language === "pt" ? "pt" : "en");
-    const isBRL = userLocale === "pt";
-    const priceId = isBRL
-      ? process.env.STRIPE_PRICE_ID_PRO_BRL
-      : process.env.STRIPE_PRICE_ID_PRO_USD;
+    const interval = billing === "yearly" ? "yearly" : "monthly";
+    const priceId = PRICE_MAP[`${userLocale}-${interval}`];
 
     if (!priceId) {
       return NextResponse.json({ error: "Price not configured" }, { status: 400 });
@@ -43,15 +48,14 @@ export async function POST(req: Request) {
     }
 
     const session = await getStripe().checkout.sessions.create({
+      ui_mode: "embedded",
       mode: "subscription",
-      payment_method_types: ["card"],
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/${userLocale}/dashboard/pricing?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/${userLocale}/dashboard/pricing?canceled=true`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/${userLocale}/dashboard/subscribe/success?session_id={CHECKOUT_SESSION_ID}`,
     });
 
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ clientSecret: session.client_secret });
   } catch (err: unknown) {
     console.error("Stripe checkout error:", err);
     const message = err instanceof Error ? err.message : "Unknown error";

@@ -5,8 +5,8 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 const LIMITS = {
-  FREE: { flashcards: 1, quizzes: 1 },
-  PRO: { flashcards: 5, quizzes: 5 },
+  FREE: { flashcards: 999, quizzes: 999 },
+  PRO: { flashcards: 999, quizzes: 999 },
 } as const;
 
 export async function GET(req: NextRequest) {

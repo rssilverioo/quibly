@@ -3,11 +3,21 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useUsage } from "@/hooks/useUsage";
 import { api } from "@/lib/api";
-import { Check, Crown, Zap } from "lucide-react";
+import { ArrowLeft, Check, Crown, Zap } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import clsx from "clsx";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  EmbeddedCheckoutProvider,
+  EmbeddedCheckout,
+} from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 type User = {
   id: string;
@@ -19,6 +29,13 @@ type User = {
   currentPeriodEnd: string | null;
 };
 
+type Billing = "monthly" | "yearly";
+
+const PRICES = {
+  monthly: { brl: "R$29,90", usd: "$9.99" },
+  yearly: { brl: "R$199,99", usd: "$99.99" },
+};
+
 export default function PricingPage() {
   const t = useTranslations("Pricing");
   const locale = useLocale();
@@ -26,6 +43,8 @@ export default function PricingPage() {
   const { usage } = useUsage();
   const [user, setUser] = useState<User | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [billing, setBilling] = useState<Billing>("monthly");
+  const [showCheckout, setShowCheckout] = useState(false);
 
   useEffect(() => {
     if (authLoading || !firebaseUser) return;
@@ -35,21 +54,19 @@ export default function PricingPage() {
       .catch(() => toast.error(t("errors.loadUser")));
   }, [firebaseUser, authLoading, t]);
 
-  const handleSubscribe = async () => {
+  const fetchClientSecret = useCallback(async () => {
+    if (!user) return "";
+    const { data } = await api.post("/stripe/checkout", {
+      userId: user.id,
+      locale,
+      billing,
+    });
+    return data.clientSecret;
+  }, [user, locale, billing]);
+
+  const handleSubscribe = () => {
     if (!user) return toast.error(t("errors.noUser"));
-    setProcessing(true);
-    try {
-      const { data } = await api.post("/stripe/checkout", {
-        userId: user.id,
-        locale,
-      });
-      if (data.url) window.location.href = data.url;
-      else toast.error(t("errors.startCheckout"));
-    } catch {
-      toast.error(t("errors.connectStripe"));
-    } finally {
-      setProcessing(false);
-    }
+    setShowCheckout(true);
   };
 
   const handleCancel = async () => {
@@ -78,9 +95,46 @@ export default function PricingPage() {
 
   const isPro = user.plan === "PRO";
   const isBRL = locale === "pt";
-  const proPrice = isBRL ? "R$19,90" : "$9.99";
+  const proPrice = isBRL ? PRICES[billing].brl : PRICES[billing].usd;
   const freePrice = isBRL ? "R$0" : "$0";
-  const period = isBRL ? "/mes" : "/mo";
+  const period = billing === "monthly"
+    ? (isBRL ? "/mês" : "/mo")
+    : (isBRL ? "/ano" : "/yr");
+  const savingsLabel = isBRL ? "Economize R$158,81/ano" : "Save $19.89/yr";
+
+  // Embedded checkout view
+  if (showCheckout) {
+    return (
+      <div className="py-8 px-4 max-w-2xl mx-auto">
+        <button
+          onClick={() => setShowCheckout(false)}
+          className="flex items-center gap-2 text-gray-400 hover:text-white text-sm mb-6 transition"
+        >
+          <ArrowLeft size={16} />
+          {isBRL ? "Voltar aos planos" : "Back to plans"}
+        </button>
+
+        <div className="bg-[#11141A] border border-[#1E212A] rounded-2xl p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Crown size={18} className="text-yellow-400" />
+              <span className="font-semibold">Pro {billing === "yearly" ? (isBRL ? "Anual" : "Yearly") : (isBRL ? "Mensal" : "Monthly")}</span>
+            </div>
+            <span className="text-lg font-bold">{proPrice}<span className="text-sm text-gray-400 font-normal">{period}</span></span>
+          </div>
+        </div>
+
+        <div id="checkout" className="rounded-2xl overflow-hidden">
+          <EmbeddedCheckoutProvider
+            stripe={stripePromise}
+            options={{ fetchClientSecret }}
+          >
+            <EmbeddedCheckout />
+          </EmbeddedCheckoutProvider>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-8 px-4 max-w-4xl mx-auto">
@@ -90,6 +144,35 @@ export default function PricingPage() {
         transition={{ duration: 0.4 }}
       >
         <h1 className="text-3xl font-bold text-center mb-2">{t("title")}</h1>
+
+        {/* Billing toggle */}
+        <div className="flex items-center justify-center gap-2 mt-4 mb-6">
+          <button
+            onClick={() => setBilling("monthly")}
+            className={clsx(
+              "px-4 py-2 rounded-lg text-sm font-medium transition",
+              billing === "monthly"
+                ? "bg-blue-600 text-white"
+                : "bg-[#1E212A] text-gray-400 hover:text-white"
+            )}
+          >
+            {isBRL ? "Mensal" : "Monthly"}
+          </button>
+          <button
+            onClick={() => setBilling("yearly")}
+            className={clsx(
+              "px-4 py-2 rounded-lg text-sm font-medium transition relative",
+              billing === "yearly"
+                ? "bg-blue-600 text-white"
+                : "bg-[#1E212A] text-gray-400 hover:text-white"
+            )}
+          >
+            {isBRL ? "Anual" : "Yearly"}
+            <span className="absolute -top-2.5 -right-2 bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+              {isBRL ? "-44%" : "-17%"}
+            </span>
+          </button>
+        </div>
 
         {/* Current usage section */}
         {usage && (
@@ -127,7 +210,7 @@ export default function PricingPage() {
         >
           <h2 className="text-xl font-bold text-white mb-4">Free</h2>
           <p className="text-3xl font-bold text-white mb-6">
-            {freePrice} <span className="text-sm text-gray-400 font-normal">{period}</span>
+            {freePrice} <span className="text-sm text-gray-400 font-normal">{isBRL ? "/mês" : "/mo"}</span>
           </p>
           <ul className="space-y-3 text-gray-300 text-sm mb-8">
             <li className="flex items-center gap-2">
@@ -166,9 +249,13 @@ export default function PricingPage() {
           <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
             <Crown size={20} className="text-yellow-400" /> Pro
           </h2>
-          <p className="text-3xl font-bold text-white mb-6">
+          <p className="text-3xl font-bold text-white mb-1">
             {proPrice} <span className="text-sm text-gray-400 font-normal">{period}</span>
           </p>
+          {billing === "yearly" && (
+            <p className="text-xs text-green-400 mb-5">{savingsLabel}</p>
+          )}
+          {billing === "monthly" && <div className="mb-6" />}
           <ul className="space-y-3 text-gray-300 text-sm mb-8">
             <li className="flex items-center gap-2">
               <Check size={16} className="text-green-500 shrink-0" /> {t("pro.uploads")}

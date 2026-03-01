@@ -1,8 +1,8 @@
 import { prisma } from "./prisma";
 
 const LIMITS = {
-  FREE: { flashcards: 10, quizzes: 10 },
-  PRO: { flashcards: 10, quizzes: 10 },
+  FREE: { flashcards: 999, quizzes: 999 },
+  PRO: { flashcards: 999, quizzes: 999 },
 } as const;
 
 function getTodayString(): string {
