@@ -12,6 +12,11 @@ enum Plan {
   PRO
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id          String   @id @default(uuid())
   firebaseUid String   @unique
@@ -20,6 +25,7 @@ model User {
   photoUrl    String?
   language    String   @default("pt")
   plan        Plan     @default(FREE)
+  role        Role     @default(USER)
 
   // Gamification
   xp            Int       @default(0)
