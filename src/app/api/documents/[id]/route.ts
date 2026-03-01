@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminAuth } from "@/lib/firebaseAdmin";
 import { prisma } from "@/lib/prisma";
-import { s3 } from "@/lib/s3";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { deleteFromTigris } from "@/lib/tigris";
 
-// ============================
-// 🔹 GET /api/documents/:id
-// ============================
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }   // ✅ precisa ser Promise no Next 15
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
 
@@ -30,8 +28,8 @@ export async function GET(
     const document = await prisma.document.findUnique({
       where: { id },
       include: {
-        quizzes: { include: { questions: { include: { options: true } } } },
-        sets: { include: { cards: true }, orderBy: { createdAt: "desc" } },
+        quizzes: { include: { questions: true } },
+        flashcardSets: { include: { cards: true }, orderBy: { createdAt: "desc" } },
       },
     });
 
@@ -47,10 +45,10 @@ export async function GET(
     return NextResponse.json({
       ...document,
       quizzesCount: document.quizzes.length,
-      flashcardSetsCount: document.sets.length,
+      flashcardSetsCount: document.flashcardSets.length,
     });
   } catch (err) {
-    console.error("❌ Fetch document failed:", err);
+    console.error("Fetch document failed:", err);
     return NextResponse.json(
       { error: "Failed to fetch document", details: String(err) },
       { status: 500 }
@@ -58,12 +56,9 @@ export async function GET(
   }
 }
 
-// ============================
-// 🔹 DELETE /api/documents/:id
-// ============================
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }   // ✅ idem aqui
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
 
@@ -91,35 +86,29 @@ export async function DELETE(
         { status: 403 }
       );
 
-    // 🧹 Deleta relacionamentos
+    // Delete related flashcardSets and quizzes first (their children cascade via schema)
     await prisma.flashcardSet.deleteMany({ where: { documentId: id } });
     await prisma.quiz.deleteMany({ where: { documentId: id } });
-
-    // 🗑️ Deleta o documento no banco
     await prisma.document.delete({ where: { id } });
 
-    // ☁️ Remove da S3 se existir
-    if (document.fileUrl?.includes("s3")) {
+    // Remove from Tigris
+    if (document.fileUrl) {
       try {
-        const keyMatch = document.fileUrl.match(/amazonaws\.com\/(.+)$/);
-        const key = keyMatch ? keyMatch[1] : null;
+        const bucketName = process.env.S3_BUCKET!;
+        const urlParts = document.fileUrl.split(`/${bucketName}/`);
+        const key = urlParts.length > 1 ? urlParts[1] : null;
 
         if (key) {
-          const command = new DeleteObjectCommand({
-            Bucket: process.env.AWS_S3_BUCKET!,
-            Key: key,
-          });
-          await s3.send(command);
-          console.log(`🗑️ Arquivo removido da S3: ${key}`);
+          await deleteFromTigris(key);
         }
       } catch (err) {
-        console.warn("⚠️ Falha ao remover arquivo da S3:", err);
+        console.warn("Failed to remove file from Tigris:", err);
       }
     }
 
     return NextResponse.json({ success: true, message: "Document deleted" });
   } catch (err) {
-    console.error("❌ Document deletion failed:", err);
+    console.error("Document deletion failed:", err);
     return NextResponse.json(
       { error: "Failed to delete document", details: String(err) },
       { status: 500 }

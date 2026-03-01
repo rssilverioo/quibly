@@ -33,8 +33,7 @@ const Header = () => {
   const menuItems = [
     { href: '/home/#features', label: t('howItWorks') },
     { href: '/pricing', label: t('pricing') },
-    { href: '/home/#enterprise', label: t('enterprise') },
-    { href: '/home/#faq', label: t('faq') },
+{ href: '/home/#faq', label: t('faq') },
     { href: '/careers', label: t('careers'), disabled: true },
   ]
 

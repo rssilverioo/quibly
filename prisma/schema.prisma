@@ -7,184 +7,118 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/**
- * ==========================================================
- * USERS
- * ==========================================================
- */
+enum Plan {
+  FREE
+  PRO
+}
+
 model User {
   id          String   @id @default(uuid())
   firebaseUid String   @unique
   email       String?  @unique
   name        String?
-  plan        Plan     @default(FREE)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
-  language    Language @default(PT)
   photoUrl    String?
+  language    String   @default("pt")
+  plan        Plan     @default(FREE)
 
-  lastDailyCreditAt DateTime? // ✅ <- ADICIONE ISSO
+  // Gamification
+  xp            Int       @default(0)
+  streak        Int       @default(0)
+  level         String    @default("Iniciante")
+  lastStudyDate DateTime?
 
-  // Relations
-  documents    Document[]
-  quizzes      Quiz[]
-  flashcards   Flashcard[]
-  sets         FlashcardSet[]
-  Subscription Subscription?
+  // Stripe (inlined from old Subscription model)
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?
+  stripePriceId        String?
+  subscriptionStatus   String?   @default("inactive")
+  currentPeriodEnd     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  documents     Document[]
+  flashcardSets FlashcardSet[]
+  quizzes       Quiz[]
+  dailyUsages   DailyUsage[]
 }
 
-/**
- * ==========================================================
- * DOCUMENTS
- * ==========================================================
- */
 model Document {
   id        String   @id @default(uuid())
-  title     String
-  fileUrl   String
   userId    String
+  title     String
   subject   String?
   content   String?
+  fileUrl   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
-  user    User           @relation(fields: [userId], references: [id])
-  quizzes Quiz[]
-  sets    FlashcardSet[] // ✅ renomeado (antes FlashcardSet)
+  user          User           @relation(fields: [userId], references: [id])
+  quizzes       Quiz[]
+  flashcardSets FlashcardSet[]
 }
 
-/**
- * ==========================================================
- * QUIZZES
- * ==========================================================
- */
-model Quiz {
-  id         String   @id @default(uuid())
-  topic      String?
-  documentId String?
-  userId     String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  language   String? // 👈 idioma detectado
-
-  // Relations
-  document  Document?  @relation(fields: [documentId], references: [id])
-  user      User?      @relation(fields: [userId], references: [id])
-  questions Question[]
-}
-
-/**
- * ==========================================================
- * QUESTIONS
- * ==========================================================
- */
-model Question {
-  id        String       @id @default(uuid())
-  quizId    String
-  kind      QuestionKind
-  prompt    String
-  answer    String
-  explain   String?
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @default(now()) @updatedAt
-
-  // Relations
-  quiz    Quiz     @relation(fields: [quizId], references: [id])
-  options Option[]
-}
-
-/**
- * ==========================================================
- * OPTIONS (for quizzes)
- * ==========================================================
- */
-model Option {
-  id         String   @id @default(uuid())
-  questionId String
-  key        String
-  text       String?
-  imageUrl   String?
-  isCorrect  Boolean
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-
-  // Relations
-  question Question @relation(fields: [questionId], references: [id])
-}
-
-/**
- * ==========================================================
- * FLASHCARDS (individual cards)
- * ==========================================================
- */
-model Flashcard {
-  id             String   @id @default(uuid())
-  front          String
-  back           String
-  explain        String?
-  topic          String?
-  userId         String
-  flashcardSetId String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now()) @updatedAt
-
-  // Relations
-  user         User          @relation(fields: [userId], references: [id])
-  flashcardSet FlashcardSet? @relation(fields: [flashcardSetId], references: [id])
-}
-
-/**
- * ==========================================================
- * FLASHCARD SETS (group of cards per topic/document)
- * ==========================================================
- */
 model FlashcardSet {
-  id       String  @id @default(uuid())
-  topic    String
-  language String? // 👈 novo campo
-
-  documentId String?
+  id         String   @id @default(uuid())
   userId     String
+  documentId String?
+  topic      String
+  language   String?
   createdAt  DateTime @default(now())
 
-  // Relations
-  document Document?   @relation(fields: [documentId], references: [id])
-  user     User        @relation(fields: [userId], references: [id])
+  user     User       @relation(fields: [userId], references: [id])
+  document Document?  @relation(fields: [documentId], references: [id])
   cards    Flashcard[]
 }
 
-model Subscription {
-  id                   String    @id @default(uuid())
-  userId               String    @unique
-  stripeCustomerId     String    @unique
-  stripeSubscriptionId String? // assinatura ativa
-  stripePriceId        String?
-  status               String    @default("inactive") // active | canceled | inactive
-  current_period_end   DateTime?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @default(now()) @updatedAt
+model Flashcard {
+  id             String   @id @default(uuid())
+  flashcardSetId String
+  front          String
+  back           String
+  explain        String?
+  imageUrl       String?
+  imageQuery     String?
+  createdAt      DateTime @default(now())
 
-  // Relations
+  flashcardSet FlashcardSet @relation(fields: [flashcardSetId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id         String   @id @default(uuid())
+  userId     String
+  documentId String?
+  topic      String?
+  language   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id])
+  document  Document?  @relation(fields: [documentId], references: [id])
+  questions Question[]
+}
+
+model Question {
+  id           String   @id @default(uuid())
+  quizId       String
+  question     String
+  options      String[]
+  correctIndex Int
+  imageUrl     String?
+  imageQuery   String?
+  createdAt    DateTime @default(now())
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model DailyUsage {
+  id                  String @id @default(uuid())
+  userId              String
+  date                String
+  flashcardsGenerated Int    @default(0)
+  quizzesGenerated    Int    @default(0)
+
   user User @relation(fields: [userId], references: [id])
-}
 
-/**
- * ==========================================================
- * ENUMS
- * ==========================================================
- */
-enum Plan {
-  FREE
-  PREMIUM
-}
-
-enum QuestionKind {
-  TEXT
-  IMAGE
-}
-
-enum Language {
-  PT
-  EN
+  @@unique([userId, date])
 }

@@ -1,11 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: NextRequest,
-  context: any // 👈 troque o tipo para "any" para o compilador aceitar o formato
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = context?.params?.id;
+  const { id } = await params;
 
   if (!id) {
     return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
@@ -14,9 +16,6 @@ export async function GET(
   try {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: {
-        Subscription: true,
-      },
     });
 
     if (!user) {
@@ -25,7 +24,7 @@ export async function GET(
 
     return NextResponse.json(user);
   } catch (err) {
-    console.error("❌ Error fetching user:", err);
+    console.error("Error fetching user:", err);
     return NextResponse.json(
       { error: "Failed to fetch user", details: String(err) },
       { status: 500 }

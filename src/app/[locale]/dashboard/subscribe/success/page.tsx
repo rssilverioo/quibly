@@ -7,19 +7,20 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 
 type User = {
   id: string;
   name: string | null;
   email: string | null;
-  plan: "FREE" | "PREMIUM";
+  plan: "FREE" | "PRO";
 };
 
 export default function SubscribeSuccessPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const locale = useLocale();
 
-  // 🎉 Função para disparar confete
   const launchConfetti = () => {
     const duration = 2000;
     const end = Date.now() + duration;
@@ -43,17 +44,16 @@ export default function SubscribeSuccessPage() {
     })();
   };
 
-  // 🔄 Busca o usuário e dispara confete se premium
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { data } = await api.get("/users/me");
         setUser(data);
-        if (data.plan === "PREMIUM") {
+        if (data.plan === "PRO") {
           launchConfetti();
         }
-      } catch (err) {
-        toast.error("Erro ao verificar assinatura.");
+      } catch {
+        toast.error("Error verifying subscription.");
       } finally {
         setLoading(false);
       }
@@ -64,7 +64,7 @@ export default function SubscribeSuccessPage() {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center text-gray-400">
-        Verificando sua assinatura...
+        Verifying subscription...
       </div>
     );
   }
@@ -74,33 +74,33 @@ export default function SubscribeSuccessPage() {
       <Card className="max-w-md w-full bg-[#1C1F27] border border-[#262B35] text-center p-6">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center mb-4">
-            {user?.plan === "PREMIUM"
-              ? "🎉 Assinatura confirmada!"
-              : "Aguardando confirmação..."}
+            {user?.plan === "PRO"
+              ? "Subscription confirmed!"
+              : "Waiting for confirmation..."}
           </CardTitle>
         </CardHeader>
 
         <CardContent>
-          {user?.plan === "PREMIUM" ? (
+          {user?.plan === "PRO" ? (
             <>
               <p className="text-gray-300 mb-4">
-                Parabéns, <span className="font-semibold">{user?.name}</span>!
+                Congratulations, <span className="font-semibold">{user?.name}</span>!
                 <br />
-                Sua assinatura do <span className="text-[#6C63FF]">Quibly PRO</span> foi ativada com sucesso.
+                Your <span className="text-blue-500">Quibly PRO</span> subscription is now active.
               </p>
               <p className="text-gray-400 text-sm mb-6">
-                Agora você tem acesso ilimitado a quizzes, flashcards e novos recursos exclusivos. 🚀
+                You now have access to 5 daily generations and priority processing.
               </p>
 
               <div className="flex flex-col gap-3">
-                <Link href="/dashboard">
-                  <Button className="bg-[#6C63FF] hover:bg-[#5750E5] w-full">
-                    Ir para o Dashboard
+                <Link href={`/${locale}/dashboard/home`}>
+                  <Button className="bg-blue-600 hover:bg-blue-700 w-full">
+                    Go to Dashboard
                   </Button>
                 </Link>
-                <Link href="/dashboard/subscribe">
+                <Link href={`/${locale}/dashboard/pricing`}>
                   <Button variant="outline" className="border-gray-600 text-gray-300 w-full">
-                    Gerenciar Assinatura
+                    Manage Subscription
                   </Button>
                 </Link>
               </div>
@@ -108,13 +108,13 @@ export default function SubscribeSuccessPage() {
           ) : (
             <>
               <p className="text-gray-400 mb-6">
-                Estamos processando sua assinatura. Isso pode levar alguns segundos.
+                Processing your subscription. This may take a few seconds.
               </p>
               <Button
                 onClick={() => window.location.reload()}
-                className="bg-[#6C63FF] hover:bg-[#5750E5] w-full"
+                className="bg-blue-600 hover:bg-blue-700 w-full"
               >
-                Recarregar
+                Reload
               </Button>
             </>
           )}

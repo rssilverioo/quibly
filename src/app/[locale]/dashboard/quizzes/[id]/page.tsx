@@ -1,310 +1,395 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import NextImage from "next/image";
 import { api } from "@/lib/api";
-import { useTranslations } from "next-intl";
-import {
-  Loader2,
-  ChevronLeft,
-  ChevronRight,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
-
-// ======================
-// 🔹 Tipos
-// ======================
-
-type Option = {
-  id: string;
-  key: string;
-  text: string;
-  imageUrl: string | null;
-  isCorrect: boolean;
-};
+import { useLocale, useTranslations } from "next-intl";
+import { useGamification } from "@/hooks/useGamification";
+import { CheckCircle, XCircle, Zap, RotateCcw, ArrowLeft, Trophy } from "lucide-react";
+import confetti from "canvas-confetti";
+import { useAuth } from "@/hooks/useAuth";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
 
 type Question = {
   id: string;
-  quizId: string;
-  kind: "TEXT" | "IMAGE";
-  prompt: string;
-  answer: string;
-  explain?: string | null;
-  options: Option[];
+  question: string;
+  options: string[];
+  correctIndex: number;
+  imageUrl?: string | null;
 };
 
 type Quiz = {
   id: string;
-  topic: string;
-  documentId: string;
-  userId: string;
+  topic: string | null;
   questions: Question[];
 };
 
-type Flashcard = {
-  id: string;
-  front: string;
-  back: string;
-  explain?: string | null;
-};
+export default function QuizViewerPage() {
+  const t = useTranslations("Quiz");
+  const locale = useLocale();
+  const params = useParams();
+  const id = typeof params?.id === "string" ? params.id : "";
+  const { user } = useAuth();
+  const { awardXP } = useGamification();
 
-type FlashcardSet = {
-  id: string;
-  topic: string;
-  cards: Flashcard[];
-};
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [answered, setAnswered] = useState(false);
+  const [score, setScore] = useState(0);
+  const [xpEarned, setXpEarned] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [answers, setAnswers] = useState<("correct" | "wrong" | "unanswered")[]>([]);
+  const [xpToast, setXpToast] = useState<number | null>(null);
+  const [direction, setDirection] = useState(1);
 
-type Document = {
-  id: string;
-  title: string;
-  fileUrl: string;
-  userId: string;
-  subject?: string | null;
-  content?: string | null;
-  quizzes: Quiz[];
-  sets: FlashcardSet[];
-};
+  useEffect(() => {
+    if (!user || !id) return;
 
-// ======================
-// 🔹 Skeleton Loader
-// ======================
+    const fetchQuiz = async () => {
+      try {
+        const { data } = await api.get(`/quizzes/${id}`);
+        setQuiz(data);
+        setAnswers(new Array(data.questions?.length || 0).fill("unanswered"));
+      } catch {
+        console.error("Error loading quiz");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-function QuizSkeleton({ t }: { t: (key: string) => string }) {
-  return (
-    <div className="min-h-screen bg-[#0B0D12] text-white flex flex-col items-center py-10 px-6">
-      <div className="max-w-3xl w-full animate-pulse">
-        <div className="h-8 bg-[#1E212A] rounded-md w-1/2 mx-auto mb-4" />
-        <div className="h-4 bg-[#1E212A] rounded-md w-1/3 mx-auto mb-8" />
-        <div className="bg-[#11141A] border border-[#1E212A] rounded-xl p-6">
-          <div className="h-5 bg-[#1E212A] rounded-md mb-6 w-2/3" />
-          <div className="grid grid-cols-2 gap-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-32 bg-[#1E212A] rounded-md w-full"></div>
-            ))}
+    fetchQuiz();
+  }, [id, user]);
+
+  const showXPToast = (points: number) => {
+    setXpToast(points);
+    setTimeout(() => setXpToast(null), 1200);
+  };
+
+  const handlePlayAgain = () => {
+    if (!quiz) return;
+    setCurrentIndex(0);
+    setSelectedOption(null);
+    setAnswered(false);
+    setScore(0);
+    setXpEarned(0);
+    setFinished(false);
+    setAnswers(new Array(quiz.questions.length).fill("unanswered"));
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center py-10 px-6 max-w-3xl mx-auto">
+        <div className="w-full animate-pulse">
+          <div className="h-8 bg-[#1E212A] rounded-md w-1/2 mx-auto mb-4" />
+          <div className="h-4 bg-[#1E212A] rounded-md w-1/3 mx-auto mb-8" />
+          <div className="bg-[#11141A] border border-[#1E212A] rounded-2xl p-6">
+            <div className="h-5 bg-[#1E212A] rounded-md mb-6 w-2/3" />
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-12 bg-[#1E212A] rounded-xl w-full" />
+              ))}
+            </div>
           </div>
         </div>
-        <p className="text-center text-gray-400 mt-6">{t("loadingQuiz")}</p>
-      </div>
-    </div>
-  );
-}
-
-// ======================
-// 🔹 Componente principal
-// ======================
-
-export default function QuizPage() {
-  const { id } = useParams<{ id: string }>();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [score, setScore] = useState(0);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-  const t = useTranslations("Quiz");
-
-  // 🔹 Busca documento + quiz
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["document", id],
-    queryFn: async (): Promise<Document> => {
-      const res = await api.get(`/documents/${id}`);
-      return res.data;
-    },
-  });
-
-  const quiz = data?.quizzes?.[0];
-  const finished = quiz && Object.keys(answers).length === quiz.questions.length;
-
-  // 🔹 Pré-carregar imagens antes do quiz iniciar
-  useEffect(() => {
-    if (!quiz) return;
-
-    const imageUrls = quiz.questions
-      .filter((q) => q.kind === "IMAGE")
-      .flatMap((q) => q.options.map((opt) => opt.text));
-
-    if (imageUrls.length === 0) {
-      setImagesLoaded(true);
-      return;
-    }
-
-    let loaded = 0;
-    const total = imageUrls.length;
-
-    imageUrls.forEach((src) => {
-      const img = new window.Image();
-      img.src = src;
-      img.onload = img.onerror = () => {
-        loaded++;
-        if (loaded === total) setImagesLoaded(true);
-      };
-    });
-  }, [quiz]);
-
-  if (isLoading) return <QuizSkeleton t={t} />;
-
-  if (error || !data)
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-400">
-        {t("loadError")}
       </div>
     );
+  }
 
-  if (!quiz)
+  if (!quiz) {
     return (
-      <div className="flex justify-center items-center h-screen text-gray-400">
+      <div className="flex justify-center items-center h-[70vh] text-gray-400">
         {t("noQuiz")}
       </div>
     );
+  }
 
-  if (!imagesLoaded)
+  if (finished) {
+    const percentage = Math.round((score / quiz.questions.length) * 100);
+    const isPerfect = score === quiz.questions.length;
+
     return (
-      <div className="flex justify-center items-center h-screen text-gray-400">
-        <Loader2 className="animate-spin w-6 h-6 mr-2" /> {t("loadingImages")}
-      </div>
-    );
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center h-[70vh] text-center px-4"
+      >
+        <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 ${
+          isPerfect ? "bg-yellow-500/10" : "bg-green-500/10"
+        }`}>
+          {isPerfect ? (
+            <Trophy size={36} className="text-yellow-400" />
+          ) : (
+            <CheckCircle size={36} className="text-green-500" />
+          )}
+        </div>
 
+        {isPerfect && (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-yellow-400 text-sm font-medium mb-2"
+          >
+            {t("perfectScore")}
+          </motion.p>
+        )}
+
+        <h2 className="text-3xl font-bold mb-2">
+          {t("result", { score, total: quiz.questions.length })}
+        </h2>
+
+        <div className="flex items-center gap-2 text-yellow-400 text-xl mb-3">
+          <Zap size={22} />
+          <span className="font-bold">+{xpEarned} XP</span>
+        </div>
+
+        <div className="flex items-center gap-1 mb-2">
+          <span className="text-gray-400 text-sm">{t("accuracy")}:</span>
+          <span className={`text-lg font-bold ${percentage >= 70 ? "text-green-400" : "text-orange-400"}`}>
+            {percentage}%
+          </span>
+        </div>
+
+        {/* Progress bubbles */}
+        <div className="flex gap-1.5 mb-8">
+          {answers.map((answer, i) => (
+            <div
+              key={i}
+              className={`w-3 h-3 rounded-full ${
+                answer === "correct"
+                  ? "bg-green-500"
+                  : answer === "wrong"
+                  ? "bg-red-500"
+                  : "bg-gray-600"
+              }`}
+            />
+          ))}
+        </div>
+
+        <p className="text-gray-400 mb-8">{t("congrats")}</p>
+
+        <div className="flex gap-3">
+          <button
+            onClick={handlePlayAgain}
+            className="flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium transition"
+          >
+            <RotateCcw size={16} />
+            {t("playAgain")}
+          </button>
+          <Link
+            href={`/${locale}/dashboard/quizzes`}
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#1E212A] hover:bg-[#252830] text-gray-300 rounded-xl text-sm font-medium transition"
+          >
+            <ArrowLeft size={16} />
+            {t("backDashboard")}
+          </Link>
+        </div>
+      </motion.div>
+    );
+  }
+
+  const totalQuestions = quiz.questions.length;
   const question = quiz.questions[currentIndex];
 
-  // ======================
-  // 🔹 Handlers
-  // ======================
+  if (!question || totalQuestions === 0) {
+    return (
+      <div className="flex justify-center items-center h-[70vh] text-gray-400">
+        {t("noQuiz")}
+      </div>
+    );
+  }
 
-  const handleAnswer = (questionId: string, selectedKey: string) => {
-    if (answers[questionId]) return;
+  const handleSelectOption = async (optionIndex: number) => {
+    if (answered) return;
 
-    const q = quiz.questions.find((q) => q.id === questionId);
-    const correctOption = q?.options.find((o) => o.isCorrect)?.key;
+    setSelectedOption(optionIndex);
+    setAnswered(true);
 
-    setAnswers((prev) => ({ ...prev, [questionId]: selectedKey }));
+    const isCorrect = optionIndex === question.correctIndex;
 
-    if (selectedKey === correctOption) setScore((prev) => prev + 1);
+    const newAnswers = [...answers];
+    newAnswers[currentIndex] = isCorrect ? "correct" : "wrong";
+    setAnswers(newAnswers);
+
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
+      const result = await awardXP("quiz_correct");
+      if (result) {
+        setXpEarned((prev) => prev + result.pointsAwarded);
+        showXPToast(result.pointsAwarded);
+      }
+    } else {
+      const result = await awardXP("quiz_wrong");
+      if (result) {
+        setXpEarned((prev) => prev + result.pointsAwarded);
+        showXPToast(result.pointsAwarded);
+      }
+    }
+
+    setTimeout(() => {
+      if (currentIndex + 1 >= totalQuestions) {
+        setFinished(true);
+        const finalScore = isCorrect ? score + 1 : score;
+        if (finalScore / totalQuestions > 0.7) {
+          confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+        }
+      } else {
+        setDirection(1);
+        setCurrentIndex((prev) => prev + 1);
+        setSelectedOption(null);
+        setAnswered(false);
+      }
+    }, 1500);
   };
-
-  const handleNext = () => {
-    if (currentIndex < quiz.questions.length - 1)
-      setCurrentIndex((prev) => prev + 1);
-  };
-
-  const handlePrev = () => {
-    if (currentIndex > 0) setCurrentIndex((prev) => prev - 1);
-  };
-
-  // ======================
-  // 🔹 UI
-  // ======================
 
   return (
-    <div className="min-h-screen bg-[#0B0D12] text-white flex flex-col items-center py-10 px-6">
-      <div className="max-w-3xl w-full">
-        <h1 className="text-3xl font-bold mb-2 text-center">{quiz.topic}</h1>
-        <p className="text-gray-400 text-center mb-6">
-          {quiz.questions.length} {t("questions")}
-        </p>
+    <div className="flex flex-col items-center py-6 px-4 max-w-3xl mx-auto">
+      <h1 className="text-xl font-bold mb-3 text-center">{quiz.topic || "Quiz"}</h1>
 
-        {/* Pergunta atual */}
-        <div className="bg-[#11141A] border border-[#1E212A] rounded-xl p-6 mb-6">
-          <h2 className="text-lg font-medium mb-4">
-            {currentIndex + 1}. {question.prompt}
+      {/* Progress bubbles */}
+      <div className="flex gap-1.5 mb-4">
+        {answers.map((answer, i) => (
+          <div
+            key={i}
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              i === currentIndex
+                ? "bg-blue-500 scale-125"
+                : answer === "correct"
+                ? "bg-green-500"
+                : answer === "wrong"
+                ? "bg-red-500"
+                : "bg-gray-700"
+            }`}
+          />
+        ))}
+      </div>
+
+      <p className="text-sm text-gray-500 mb-6">
+        {currentIndex + 1} / {totalQuestions}
+      </p>
+
+      {/* Floating XP toast */}
+      <AnimatePresence>
+        {xpToast !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: -30 }}
+            exit={{ opacity: 0, y: -60 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 px-3 py-1.5 bg-yellow-500/20 text-yellow-400 rounded-full text-sm font-bold backdrop-blur-sm"
+          >
+            <Zap size={14} />
+            +{xpToast} XP
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Question with slide animation */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, x: direction * 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: direction * -40 }}
+          transition={{ duration: 0.25 }}
+          className="w-full bg-[#11141A] border border-[#1E212A] rounded-2xl p-6 mb-6"
+        >
+          {question.imageUrl && (
+            <div className="flex justify-center mb-4">
+              <Image
+                src={question.imageUrl}
+                alt=""
+                width={200}
+                height={140}
+                className="w-auto max-h-36 object-contain rounded-lg"
+                unoptimized
+              />
+            </div>
+          )}
+
+          <h2 className="text-lg font-medium mb-6">
+            {currentIndex + 1}. {question.question}
           </h2>
 
-          <div
-            className={`grid ${
-              question.kind === "IMAGE"
-                ? "grid-cols-2 gap-4"
-                : "grid-cols-1 gap-2"
-            }`}
-          >
-            {question.options.map((option) => {
-              const selected = answers[question.id] === option.key;
-              const correct = option.isCorrect;
-              const answered = answers[question.id] !== undefined;
+          <div className="space-y-3">
+            {question.options.map((option, idx) => {
+              const isSelected = selectedOption === idx;
+              const isCorrect = idx === question.correctIndex;
 
-              const base =
-                "rounded-lg border p-3 text-sm transition cursor-pointer flex items-center justify-center text-center";
-              const state = answered
-                ? correct
-                  ? "border-green-500 bg-green-900/20"
-                  : selected
-                  ? "border-red-500 bg-red-900/20"
-                  : "border-[#1E212A] bg-[#0F1116]"
-                : "border-[#1E212A] hover:border-blue-500 bg-[#0F1116]";
+              let borderColor = "border-[#1E212A]";
+              let bgColor = "bg-[#0F1116]";
+
+              if (answered) {
+                if (isCorrect) {
+                  borderColor = "border-green-500";
+                  bgColor = "bg-green-900/20";
+                } else if (isSelected && !isCorrect) {
+                  borderColor = "border-red-500";
+                  bgColor = "bg-red-900/20";
+                }
+              } else if (isSelected) {
+                borderColor = "border-blue-500";
+              }
 
               return (
-                <button
-                  key={option.id}
-                  onClick={() => handleAnswer(question.id, option.key)}
+                <motion.button
+                  key={idx}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  onClick={() => handleSelectOption(idx)}
                   disabled={answered}
-                  className={`${base} ${state}`}
+                  className={`w-full text-left rounded-xl border p-4 text-sm transition-all flex items-center gap-3 ${borderColor} ${bgColor} ${
+                    !answered ? "hover:border-blue-500 cursor-pointer" : "cursor-default"
+                  }`}
                 >
-                  {question.kind === "IMAGE" ? (
-                    <NextImage
-                      src={option.text}
-                      alt={option.key}
-                      width={150}
-                      height={150}
-                      className="rounded-md object-cover w-full h-40"
-                      priority
-                    />
-                  ) : (
-                    <span className="text-gray-200">
-                      <b>{option.key})</b> {option.text}
-                    </span>
+                  <span className="w-8 h-8 rounded-full border border-[#2A2E38] flex items-center justify-center text-xs font-bold shrink-0">
+                    {String.fromCharCode(65 + idx)}
+                  </span>
+                  <span className="text-gray-200 flex-1">{option}</span>
+                  {answered && isCorrect && (
+                    <CheckCircle size={18} className="ml-auto text-green-500 shrink-0" />
                   )}
-                </button>
+                  {answered && isSelected && !isCorrect && (
+                    <XCircle size={18} className="ml-auto text-red-500 shrink-0" />
+                  )}
+                </motion.button>
               );
             })}
           </div>
 
           {/* Feedback */}
-          {answers[question.id] && (
-            <div className="flex items-center mt-4">
-              {question.options.find(
-                (o) => o.key === answers[question.id] && o.isCorrect
-              ) ? (
-                <div className="flex items-center text-green-500 gap-2">
-                  <CheckCircle size={18} /> {t("correct")}
-                </div>
-              ) : (
-                <div className="flex items-center text-red-500 gap-2">
-                  <XCircle size={18} /> {t("wrong")} {t("correctAnswer")}:{" "}
-                  {question.options.find((o) => o.isCorrect)?.key}
-                </div>
-              )}
-            </div>
-          )}
+          <AnimatePresence>
+            {answered && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center mt-4"
+              >
+                {selectedOption === question.correctIndex ? (
+                  <div className="flex items-center text-green-500 gap-2 text-sm">
+                    <CheckCircle size={16} /> {t("correct")}
+                  </div>
+                ) : (
+                  <div className="flex items-center text-red-500 gap-2 text-sm">
+                    <XCircle size={16} /> {t("wrong")}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* XP earned */}
+      {xpEarned > 0 && (
+        <div className="flex items-center gap-2 text-yellow-400 text-sm">
+          <Zap size={16} />
+          <span className="font-semibold">+{xpEarned} XP</span>
         </div>
-
-        {/* Navegação */}
-        <div className="flex justify-between mt-4">
-          <button
-            onClick={handlePrev}
-            disabled={currentIndex === 0}
-            className="flex items-center gap-1 px-4 py-2 rounded-lg bg-[#1E212A] text-gray-300 hover:bg-[#252830] disabled:opacity-40"
-          >
-            <ChevronLeft size={18} /> {t("prev")}
-          </button>
-
-          <button
-            onClick={handleNext}
-            disabled={currentIndex === quiz.questions.length - 1}
-            className="flex items-center gap-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-40"
-          >
-            {t("next")} <ChevronRight size={18} />
-          </button>
-        </div>
-
-        {/* Resultado final */}
-        {finished && (
-          <div className="text-center mt-8">
-            <p className="text-lg font-semibold">
-              🧠 {t("result", { score, total: quiz.questions.length })}
-            </p>
-            <p className="text-gray-400 mt-1">{t("congrats")}</p>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

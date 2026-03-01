@@ -12,35 +12,30 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
 import { AlertTriangle, CreditCard } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-type Subscription = {
-  id: string;
-  status: string;
-  current_period_end?: string | null;
-  stripeSubscriptionId?: string | null;
-};
 
 type User = {
   id: string;
   name: string | null;
   email: string | null;
-  plan: "FREE" | "PREMIUM";
-  Subscription?: Subscription | null;
+  plan: "FREE" | "PRO";
+  stripeSubscriptionId: string | null;
+  subscriptionStatus: string | null;
+  currentPeriodEnd: string | null;
 };
 
 export default function CancelSubscriptionPage() {
   const t = useTranslations("Cancel");
+  const locale = useLocale();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [processing, setProcessing] = useState(false);
   const router = useRouter();
 
-  // 🔹 Busca o user (já traz Subscription junto)
   useEffect(() => {
     api
       .get("/users/me")
@@ -50,14 +45,14 @@ export default function CancelSubscriptionPage() {
   }, [t]);
 
   const handleCancel = async () => {
-    if (!user?.Subscription) return;
+    if (!user?.stripeSubscriptionId) return;
     setProcessing(true);
     try {
       await api.post("/stripe/cancel", {
-        subscriptionId: user.Subscription.stripeSubscriptionId,
+        subscriptionId: user.stripeSubscriptionId,
       });
       toast.success(t("cancelSuccess"));
-      router.push("/subscribe");
+      router.push(`/${locale}/dashboard/pricing`);
     } catch {
       toast.error(t("cancelError"));
     } finally {
@@ -83,7 +78,7 @@ export default function CancelSubscriptionPage() {
     );
   }
 
-  if (!user?.Subscription) {
+  if (!user?.stripeSubscriptionId) {
     return (
       <div className="flex h-screen items-center justify-center text-gray-400">
         {t("noSubscription")}
@@ -91,16 +86,15 @@ export default function CancelSubscriptionPage() {
     );
   }
 
-  const sub = user.Subscription;
-  const nextBilling = sub.current_period_end
-    ? new Date(sub.current_period_end).toLocaleDateString()
+  const nextBilling = user.currentPeriodEnd
+    ? new Date(user.currentPeriodEnd).toLocaleDateString()
     : null;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#0F1117] text-white p-4">
       <Card className="max-w-md w-full bg-[#1C1F27] border border-[#262B35] shadow-xl">
         <CardHeader className="text-center">
-          <CreditCard className="w-8 h-8 mx-auto text-[#6C63FF]" />
+          <CreditCard className="w-8 h-8 mx-auto text-blue-500" />
           <CardTitle className="text-2xl font-bold mt-2">
             {t("title")}
           </CardTitle>
@@ -111,10 +105,12 @@ export default function CancelSubscriptionPage() {
             {t("status")}:{" "}
             <span
               className={
-                sub.status === "active" ? "text-green-400" : "text-yellow-400"
+                user.subscriptionStatus === "active"
+                  ? "text-green-400"
+                  : "text-yellow-400"
               }
             >
-              {sub.status}
+              {user.subscriptionStatus}
             </span>
           </p>
 
@@ -138,7 +134,6 @@ export default function CancelSubscriptionPage() {
         </CardContent>
       </Card>
 
-      {/* ✅ Modal de confirmação */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="bg-[#1C1F27] text-white border border-[#262B35]">
           <DialogHeader>

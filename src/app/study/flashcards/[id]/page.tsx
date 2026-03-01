@@ -35,8 +35,8 @@ export default function FlashcardStudy() {
     async function fetchDocument() {
       try {
         const { data } = await api.get(`/documents/${id}`);
-        if (data.sets?.length > 0) {
-          const firstSet = data.sets[0];
+        if (data.flashcardSets?.length > 0) {
+          const firstSet = data.flashcardSets[0];
           setTopic(firstSet.topic);
           setCards(firstSet.cards);
         } else {

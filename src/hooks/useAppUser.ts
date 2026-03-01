@@ -9,7 +9,14 @@ export type AppUser = {
   firebaseUid: string;
   email: string | null;
   name: string | null;
-  plan: "FREE" | "PREMIUM";
+  photoUrl: string | null;
+  plan: "FREE" | "PRO";
+  xp: number;
+  streak: number;
+  level: string;
+  lastStudyDate: string | null;
+  subscriptionStatus: string | null;
+  stripeSubscriptionId: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -19,6 +26,18 @@ export function useAppUser() {
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchUser = async () => {
+    try {
+      const { data } = await api.get("/users/me");
+      setAppUser(data);
+    } catch (err) {
+      console.error("Error loading user from API", err);
+      setAppUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (authLoading) return;
     if (!firebaseUser) {
@@ -27,20 +46,8 @@ export function useAppUser() {
       return;
     }
 
-    const fetchUser = async () => {
-      try {
-        const { data } = await api.get("/me");
-        setAppUser(data);
-      } catch (err) {
-        console.error("❌ Erro ao carregar usuário da API", err);
-        setAppUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUser();
   }, [firebaseUser, authLoading]);
 
-  return { appUser, firebaseUser, loading };
+  return { appUser, firebaseUser, loading, refetch: fetchUser };
 }

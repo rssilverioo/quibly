@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "2mb",
     },
   },
+  serverExternalPackages: ["pdf-parse"],
   images: {
     remotePatterns: [
       {
@@ -28,17 +29,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "fal.media",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "quibly.s3.sa-east-1.amazonaws.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com", // ✅ necessário para login Google
+        hostname: "lh3.googleusercontent.com",
         pathname: "/**",
       },
       {
@@ -51,12 +42,8 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: "v3b.fal.media",
-        pathname: "/**",
-      },
     ],
+    unoptimized: true,
   },
 };
 

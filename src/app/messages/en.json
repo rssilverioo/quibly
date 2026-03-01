@@ -2,6 +2,11 @@
   "Auth": {
     "subtitle": "Turn your PDFs into learning.",
     "loginGoogle": "Sign in with Google",
+    "loginFacebook": "Sign in with Facebook",
+    "registerFacebook": "Sign up with Facebook",
+    "facebookSuccess": "Facebook sign-in successful!",
+    "facebookError": "Error signing in with Facebook.",
+    "loginSuccess": "Login successful!",
     "email": "Email",
     "password": "Password",
     "login": "Sign in",
@@ -25,7 +30,7 @@
   },
   "Dashboard": {
     "myDocuments": "My Documents",
-    "noContent": "You haven't uploaded any document yet 📄",
+    "noContent": "You haven't uploaded any document yet",
     "noContentDesc": "Upload a PDF to generate flashcards and quizzes.",
     "flashcards": "flashcards",
     "quizzes": "quizzes",
@@ -37,7 +42,7 @@
   "Navbar": {
     "home": "Home",
     "documents": "Documents",
-    "create": "Create",
+    "create": "Upload",
     "pro": "PRO",
     "community": "Community",
     "logout": "Sign out",
@@ -45,17 +50,29 @@
   },
   "Flashcards": {
     "loading": "Loading flashcards...",
-    "noCards": "No flashcards available for this document.",
+    "loadError": "Error loading flashcards.",
+    "noCards": "No flashcards available yet.",
     "card": "Card",
     "of": "of",
     "previous": "Previous",
     "counter": "Count",
-
     "next": "Next",
     "pause": "Pause",
     "resume": "Resume",
-    "completed": "✅ You have completed all flashcards!",
-    "backDashboard": "Back to Dashboard"
+    "completed": "You completed all flashcards!",
+    "backDashboard": "Back to Dashboard",
+    "remaining": "cards remaining",
+    "iKnow": "I know",
+    "dontKnow": "Don't know",
+    "knownCards": "{count} of {total} cards known",
+    "study": "Study",
+    "flipHint": "Click to flip",
+    "sets": "sets",
+    "studyAgain": "Study Again",
+    "emptyTitle": "No flashcard sets yet",
+    "emptyDesc": "Generate flashcards from your documents to start studying!",
+    "uploadAndGenerate": "Upload a PDF to create flashcards",
+    "newFlashcards": "New flashcards"
   },
   "Toasts": {
     "loadError": "Failed to load data.",
@@ -65,22 +82,46 @@
   },
   "Home": {
     "loading": "Loading documents...",
-    "emptyTitle": "No content available yet 📄",
-    "emptyDesc": "Upload a document to get started 🚀",
+    "emptyTitle": "No content available yet",
+    "emptyDesc": "Upload a document to get started",
     "myDocuments": "My Documents",
     "flashcards": "flashcards",
     "quizzes": "quizzes",
     "flashcardsBtn": "Flashcards",
     "quizBtn": "Quiz",
-    "readyToGenerate": "Generate your quiz or flashcards using AI ⚡️",
-    "readyToView": "Your content is ready — start studying! 📚",
+    "readyToGenerate": "Generate your quiz or flashcards using AI",
+    "readyToView": "Your content is ready — start studying!",
     "generateFlashcards": "Generate Flashcards",
     "generateQuiz": "Generate Quiz",
     "viewFlashcards": "View Flashcards",
     "viewQuiz": "View Quiz",
     "quizGeneratedSuccess": "Quiz generated successfully!",
     "flashcardsGeneratedSuccess": "Flashcards generated successfully!",
-    "generationError": "Error generating content. Please try again."
+    "generationError": "Error generating content. Please try again.",
+    "dailyLimitReached": "Daily limit reached! Upgrade to Pro for more generations.",
+    "uploadPdf": "Upload PDF",
+    "streakDays": "day streak",
+    "confirmDelete": "Are you sure you want to delete this document?",
+    "deleteBtn": "Delete",
+    "cancelBtn": "Cancel",
+    "welcomeBack": "Welcome back, {name}!",
+    "xpToNextLevel": "{xp} XP to next level",
+    "dailyUsage": "Daily usage",
+    "continueStudying": "Continue Studying",
+    "recentFlashcards": "Recent Flashcards",
+    "recentQuizzes": "Recent Quizzes",
+    "seeAll": "See all",
+    "emptyHeroTitle": "Turn your PDFs into study superpowers",
+    "emptyHeroDesc": "Upload a PDF and our AI generates flashcards and quizzes in seconds. Start your streak today!",
+    "emptyHeroCta": "Upload your first PDF",
+    "uploadComplete": "Upload complete!",
+    "needsGeneration": "Generate study material",
+    "ready": "Ready to study",
+    "topicPlaceholder": "e.g. The French Revolution in Guiana",
+    "topicGenerate": "Generate",
+    "topicGenerating": "Generating...",
+    "topicEmpty": "Type a topic to generate study material",
+    "topicHint": "Type any topic and AI will generate study material for you"
   },
   "Upload": {
     "title": "Upload your document",
@@ -106,13 +147,18 @@
     "viewQuiz": "View Quiz",
     "viewFlashcards": "View Flashcards",
     "error": "An error occurred. Please try again.",
-    "generationError": "Error generating content. Please try again."
+    "generationError": "Error generating content. Please try again.",
+    "generatingFlashcards": "Generating flashcards...",
+    "generatingQuiz": "Generating quiz...",
+    "generated": "Generated!",
+    "limitReached": "Free plan limit reached (1 document).",
+    "upgradeHint": "Upgrade to continue.",
+    "upgradeCta": "Upgrade to Quibly Pro"
   },
   "Quiz": {
     "loadingQuiz": "Loading quiz...",
-    "loadError": "An error occurred while loading the quiz 😔",
-    "noQuiz": "No quiz has been generated for this document.",
-    "loadingImages": "Loading images...",
+    "loadError": "An error occurred while loading the quiz.",
+    "noQuiz": "No quiz has been generated yet.",
     "questions": "questions",
     "correct": "Correct!",
     "wrong": "Wrong!",
@@ -120,31 +166,57 @@
     "prev": "Previous",
     "next": "Next",
     "result": "You got {score} out of {total} questions right!",
-    "congrats": "Congratulations on completing the quiz! 🎉"
+    "congrats": "Great job completing the quiz!",
+    "play": "Play",
+    "backDashboard": "Back to Dashboard",
+    "playAgain": "Play Again",
+    "accuracy": "Accuracy",
+    "perfectScore": "Perfect score!",
+    "emptyTitle": "No quizzes yet",
+    "emptyDesc": "Generate quizzes from your documents to test your knowledge!",
+    "uploadAndGenerate": "Upload a PDF to create a quiz",
+    "newQuiz": "New quiz"
   },
-  "Subscribe": {
-    "loading": "Loading subscription details...",
-    "titleFree": "Subscribe to Quibly PRO",
-    "titlePremium": "🎉 You’re already Premium!",
-    "description": "Unlock unlimited quiz and flashcard generation with AI.",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "subscribeBtn": "Subscribe for",
-    "redirecting": "Redirecting...",
-    "manageBtn": "Manage Subscription",
-    "activePlan": "You have full access to all Quibly features. 🌟",
-    "nextBilling": "Next billing date:",
-    "features": {
-      "unlimitedQuizzes": "Unlimited quizzes",
-      "unlimitedFlashcards": "Unlimited flashcards per document",
-      "earlyAccess": "Early access to new features"
-    },
+  "Pricing": {
+    "title": "Choose your plan",
     "errors": {
       "loadUser": "Error loading user information.",
       "noUser": "User not found.",
       "startCheckout": "Error starting checkout.",
-      "connectStripe": "Error connecting to Stripe.",
-      "portalError": "Error opening billing portal."
+      "connectStripe": "Error connecting to Stripe."
+    },
+    "currentPlan": "Current plan",
+    "recommended": "RECOMMENDED",
+    "upgradePro": "Upgrade to Pro",
+    "cancelPlan": "Cancel subscription",
+    "cancelSuccess": "Subscription canceled successfully.",
+    "cancelError": "Error canceling subscription.",
+    "processing": "Processing...",
+    "free": {
+      "upload": "1 document upload per day",
+      "flashcards": "1 flashcard set per day",
+      "quizzes": "1 quiz per day",
+      "gamification": "XP, streaks & levels"
+    },
+    "pro": {
+      "uploads": "Unlimited document uploads",
+      "flashcards": "5 flashcard sets per day",
+      "quizzes": "5 quizzes per day",
+      "priority": "Priority AI processing"
+    }
+  },
+  "Gamification": {
+    "xp": "XP",
+    "streak": "Streak",
+    "level": "Level",
+    "startStreak": "Start your streak!",
+    "xpAwarded": "+{points} XP",
+    "nextLevel": "Next level",
+    "levels": {
+      "iniciante": "Beginner",
+      "estudante": "Student",
+      "mestre": "Master",
+      "genio": "Genius"
     }
   },
   "Cancel": {
@@ -169,7 +241,6 @@
     "header": {
       "howItWorks": "How it works",
       "pricing": "Pricing",
-      "enterprise": "Enterprise",
       "faq": "FAQ",
       "careers": "Careers",
       "login": "Log in",
@@ -178,9 +249,8 @@
     "hero": {
       "headlineTop": "You don't have a study problem.",
       "headlineBottom": "You have a method problem.",
-      "subtitle": "Upload any PDF or notes — Quibly's AI creates flashcards and quizzes in seconds. Daily streaks and competitive leagues make sure you actually study. Every day.",
-      "downloadApple": "Download for Apple",
-      "downloadAndroid": "Download for Android"
+      "subtitle": "Upload any PDF or notes — Quibly's AI creates flashcards and quizzes in seconds. Earn XP, build streaks, and level up as you learn. Every day.",
+      "startLearning": "Start Learning Free"
     },
     "learn": {
       "sectionLabel": "Your study gym.",
@@ -188,43 +258,59 @@
       "headlineBreak": "like you train your body."
     },
     "steps": {
-      "step1Title": "Lock in with Pomodoro",
-      "step1Desc": "Focused study sessions with built-in breaks. No scrolling, no distractions — just reps for your brain.",
-      "step2Title": "Compete in leagues",
-      "step2Desc": "Challenge your friends in weekly and monthly leagues. Rankings, streaks, and bragging rights. Studying alone is over.",
-      "step3Title": "Track your gains",
-      "step3Desc": "Streaks, study hours, sessions completed — your stats tell the real story. Consistency beats talent."
+      "step1Title": "Upload your PDF",
+      "step1Desc": "Upload any study material — PDFs, slides, notes. Our AI processes it instantly.",
+      "step2Title": "AI generates study tools",
+      "step2Desc": "Get flashcards with images and quizzes with multiple-choice questions, all generated from your content.",
+      "step3Title": "Earn XP & level up",
+      "step3Desc": "Study daily to build streaks, earn XP, and progress through levels. Consistency beats talent."
     },
     "features": {
       "card1Title": "Flashcards that actually stick",
-      "card1Desc": "AI identifies what matters most in your material and creates flashcards with spaced repetition built in. Less time studying, more time remembering.",
+      "card1Desc": "AI identifies what matters most in your material and creates flashcards with images. Less time studying, more time remembering.",
       "card2Title": "Quizzes that expose your blind spots",
       "card2Desc": "Automatically generated from your content. Find out what you really know — and what you just think you know — before the exam does."
     },
     "oneTool": {
       "headline": "One app. Every subject. Zero excuses.",
-      "paragraph1": "Biology, law, history, engineering — Quibly doesn't care what you study. Upload a PDF, slides, screenshots, or type your notes directly. The AI adapts to any subject and creates personalized study material in seconds.",
-      "paragraph2": "Streaks keep you accountable. Leagues keep you motivated. The only thing left is you showing up."
+      "paragraph1": "Biology, law, history, engineering — Quibly doesn't care what you study. Upload a PDF and the AI creates personalized study material in seconds.",
+      "paragraph2": "Streaks keep you accountable. XP keeps you motivated. The only thing left is you showing up."
+    },
+    "pricing": {
+      "headline": "Simple, transparent pricing.",
+      "subtitle": "Start free. Upgrade when you need more.",
+      "freeDesc": "Start generating flashcards and quizzes — no credit card required.",
+      "freeFeature1": "1 upload per day",
+      "freeFeature2": "1 flashcard set per day",
+      "freeFeature3": "1 quiz per day",
+      "freeFeature4": "XP, streaks & levels",
+      "freeCta": "Get started free",
+      "proDesc": "Unlock more daily generations and priority AI processing.",
+      "proFeature1": "5 uploads per day",
+      "proFeature2": "5 flashcard sets per day",
+      "proFeature3": "5 quizzes per day",
+      "proFeature4": "Priority AI processing",
+      "proCta": "Upgrade to Pro"
     },
     "faq": {
       "headline": "Got questions? We've got answers.",
       "subtitle": "Everything you need to know before your first streak.",
       "q1": "What exactly does Quibly do?",
-      "a1": "Quibly takes your study material — PDFs, slides, screenshots, or typed notes — and uses AI to generate flashcards and quizzes automatically. You study using spaced repetition and active recall — proven methods that help you remember more in less time.",
+      "a1": "Quibly takes your study material — PDFs, slides, or notes — and uses AI to generate flashcards and quizzes automatically. You earn XP and build streaks as you study, making learning a daily habit.",
       "q2": "What file formats can I upload?",
-      "a2": "PDF, images (JPG/PNG), slides (PPT/PPTX), and typed notes. We're also working on imports from Notion, Google Docs, and Apple Notes.",
-      "q3": "What are streaks and leagues?",
-      "a3": "Streaks track your daily study consistency — study every day to build your streak and see it on a visual calendar. Leagues are competitive rankings where you compete against other students weekly and monthly. It's the push you need to stay consistent.",
+      "a2": "Currently PDF files. We're working on support for images, slides, and direct text input.",
+      "q3": "What are XP, streaks and levels?",
+      "a3": "XP (experience points) are earned by studying — reviewing flashcards and answering quiz questions. Streaks track your daily study consistency. Levels progress as you accumulate XP: Beginner, Student, Master, Genius.",
       "q4": "Is Quibly free?",
-      "a4": "Yes. The Free plan gives you monthly uploads and flashcard generations to get started — no credit card required. The Pro plan unlocks unlimited uploads, advanced AI features, and priority processing.",
+      "a4": "Yes. The Free plan gives you 1 generation per day for both flashcards and quizzes. The Pro plan ($9.99/month) unlocks 5 generations per day and priority processing.",
       "q5": "Does Quibly work in Portuguese?",
       "a5": "Yes! Quibly supports English and Portuguese (BR), and the AI understands and generates content in 50+ languages.",
       "q6": "Is my data safe?",
-      "a6": "Absolutely. We use end-to-end encryption and follow GDPR and LGPD regulations. Your documents are private and never used to train AI models.",
+      "a6": "Absolutely. We use encryption and follow GDPR and LGPD regulations. Your documents are private and never used to train AI models.",
       "q7": "Can I cancel my subscription anytime?",
       "a7": "Yes, cancel anytime with zero fees. You keep Pro access until the end of your billing cycle.",
-      "q8": "Is there a file size limit?",
-      "a8": "Free accounts support files up to 20MB and 50 pages. Pro users get larger uploads with no page limit.",
+      "q8": "How does the image feature work?",
+      "a8": "When generating flashcards, our AI creates search queries to find relevant illustrations for each card, making your study material more visual and memorable.",
       "stillHaveQuestions": "Still have questions?",
       "supportText": "We're here to help you get the most out of Quibly.",
       "contactSupport": "Contact Support"
@@ -232,7 +318,7 @@
     "cta": {
       "headline": "While you're thinking about it, someone else is already studying.",
       "subtitle": "Join thousands of students who turned wasted study time into real results. Free to start — your first streak is waiting.",
-      "trustLine": "Free trial • No credit card required • iOS & Android"
+      "trustLine": "Free forever • No credit card required • Web app"
     },
     "footer": {
       "tagline": "AI-powered study tools that make you unstoppable.",

@@ -1,9 +1,11 @@
 import PricingSection from "@/components/PricingSection";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Pricing – Quibly",
-  description: "Compare our Free, Pro and Enterprise plans. Discover the perfect AI note-taking solution for individuals and teams.",
+  description: "Compare our Free and Pro plans. Discover the perfect AI study solution for students and learners.",
   metadataBase: new URL("https://quibly.com"),
   openGraph: {
     title: "Pricing – Quibly",

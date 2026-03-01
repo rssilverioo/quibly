@@ -2,9 +2,10 @@ import { adminAuth } from "@/lib/firebaseAdmin";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
-    // 🔒 Verifica o token Firebase
     const authHeader = req.headers.get("authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,20 +18,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 🔍 Busca o usuário autenticado + dados relacionados
     const user = await prisma.user.findUnique({
       where: { firebaseUid: decoded.uid },
       include: {
-        Subscription: true, // 👈 relação 1:1
         documents: {
           select: { id: true, title: true, createdAt: true },
         },
-        sets: {
-          select: { id: true, topic: true, createdAt: true },
+        flashcardSets: {
+          select: { id: true, topic: true, createdAt: true, _count: { select: { cards: true } } },
+          orderBy: { createdAt: "desc" },
         },
-        flashcards: {
-          select: { id: true, front: true, flashcardSetId: true },
-          take: 10,
+        quizzes: {
+          select: { id: true, topic: true, createdAt: true, _count: { select: { questions: true } } },
+          orderBy: { createdAt: "desc" },
         },
       },
     });
@@ -39,14 +39,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    // Get today's usage
+    const today = new Date().toISOString().split("T")[0];
+    const dailyUsage = await prisma.dailyUsage.findUnique({
+      where: { userId_date: { userId: user.id, date: today } },
+    });
+
+    return NextResponse.json({
+      ...user,
+      dailyUsage: dailyUsage || { flashcardsGenerated: 0, quizzesGenerated: 0 },
+    });
   } catch (err) {
-    console.error("❌ Error fetching user:", err);
+    console.error("Error fetching user:", err);
     return NextResponse.json(
-      {
-        error: "Failed to fetch user",
-        details: String(err),
-      },
+      { error: "Failed to fetch user", details: String(err) },
       { status: 500 }
     );
   }
