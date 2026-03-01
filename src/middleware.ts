@@ -7,11 +7,23 @@ const intlMiddleware = createIntlMiddleware({
   defaultLocale: "en",
 });
 
+// Routes that should NOT go through intl (no locale prefix)
+const bypassPaths = [
+  "/admin",
+  "/home",
+  "/pricing",
+  "/privacy",
+  "/terms",
+  "/manifesto",
+  "/join",
+  "/study",
+];
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Bypass intl middleware for /admin routes
-  if (pathname.startsWith("/admin")) {
+  // Bypass intl middleware for non-locale routes
+  if (bypassPaths.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
 
