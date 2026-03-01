@@ -195,10 +195,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full p-6 pb-28">{children}</main>
+      <main className="flex-1 max-w-7xl mx-auto w-full p-6 pb-36">{children}</main>
 
       {/* Stats row above bottom nav (mobile only) */}
-      <div className="md:hidden fixed bottom-[60px] left-0 right-0 bg-[#0B0D12]/95 border-t border-[#1E212A] px-4 py-2 flex items-center justify-center gap-4 backdrop-blur-lg">
+      <div className="md:hidden fixed bottom-[68px] left-0 right-0 z-50 bg-[#0B0D12]/95 border-t border-[#1E212A] px-4 py-2 flex items-center justify-center gap-4 backdrop-blur-lg">
         <XPProgressBar xp={userData.xp} level={userData.level} compact />
         <StreakBadge streak={userData.streak} compact />
         <LevelBadge level={userData.level} compact />
