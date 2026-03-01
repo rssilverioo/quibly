@@ -131,21 +131,22 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-[#0B0D12] text-white flex flex-col">
       {/* Top HUD — logo + stats + controls */}
-      <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-3 bg-[#0B0D12]/90 backdrop-blur-md border-b border-[#1E212A]">
-        {/* Logo */}
-        <Link href={`/${locale}/dashboard/home`} className="flex items-center gap-2 shrink-0">
-          <Image src="/logoquibly.svg" alt="Logo" width={100} height={100} />
-        </Link>
+      <header className="sticky top-0 z-50 bg-[#0B0D12]/90 backdrop-blur-md border-b border-[#1E212A]">
+        <div className="flex items-center justify-between px-6 py-3">
+          {/* Logo */}
+          <Link href={`/${locale}/dashboard/home`} className="flex items-center gap-2 shrink-0">
+            <Image src="/logoquibly.svg" alt="Logo" width={100} height={100} />
+          </Link>
 
-        {/* Stats — center */}
-        <div className="hidden md:flex items-center gap-3">
-          <XPProgressBar xp={userData.xp} level={userData.level} compact />
-          <StreakBadge streak={userData.streak} compact />
-          <LevelBadge level={userData.level} compact />
-        </div>
+          {/* Stats — center (desktop) */}
+          <div className="hidden md:flex items-center gap-3">
+            <XPProgressBar xp={userData.xp} level={userData.level} compact />
+            <StreakBadge streak={userData.streak} compact />
+            <LevelBadge level={userData.level} compact />
+          </div>
 
-        {/* Controls */}
-        <div className="flex items-center gap-3 relative">
+          {/* Controls */}
+          <div className="flex items-center gap-3 relative">
           {/* Language */}
           <button
             onClick={() => setLangMenuOpen((prev) => !prev)}
@@ -191,18 +192,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           >
             <LogOut size={18} />
           </button>
+          </div>
+        </div>
+
+        {/* Stats row (mobile only) */}
+        <div className="md:hidden flex items-center justify-center gap-4 px-4 py-2 border-t border-[#1E212A]">
+          <XPProgressBar xp={userData.xp} level={userData.level} compact />
+          <StreakBadge streak={userData.streak} compact />
+          <LevelBadge level={userData.level} compact />
         </div>
       </header>
 
       {/* Main content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full p-6 pb-36">{children}</main>
-
-      {/* Stats row above bottom nav (mobile only) */}
-      <div className="md:hidden fixed bottom-[68px] left-0 right-0 z-50 bg-[#0B0D12]/95 border-t border-[#1E212A] px-4 py-2 flex items-center justify-center gap-4 backdrop-blur-lg">
-        <XPProgressBar xp={userData.xp} level={userData.level} compact />
-        <StreakBadge streak={userData.streak} compact />
-        <LevelBadge level={userData.level} compact />
-      </div>
+      <main className="flex-1 max-w-7xl mx-auto w-full p-6 pb-28">{children}</main>
 
       {/* Bottom nav — always visible, game-style */}
       <nav className="fixed bottom-0 left-0 right-0 bg-[#0B0D12]/95 border-t border-[#1E212A] backdrop-blur-lg z-50">
