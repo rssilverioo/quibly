@@ -44,10 +44,6 @@ export async function POST(req: NextRequest) {
           email,
           name,
           photoUrl,
-          plan: "FREE",
-          xp: 0,
-          streak: 0,
-          level: "Iniciante",
         },
       });
     }
