@@ -6,7 +6,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
-  FacebookAuthProvider,
   updateProfile,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -14,7 +13,7 @@ import { api } from "@/lib/api";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { FaFacebook } from "react-icons/fa";
+
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -84,20 +83,6 @@ export default function RegisterPage() {
     }
   };
 
-  const handleFacebook = async () => {
-    try {
-      const provider = new FacebookAuthProvider();
-      const cred = await signInWithPopup(auth, provider);
-      const token = await cred.user.getIdToken();
-      await syncUser(token, cred.user.displayName || undefined);
-
-      toast.success(t("facebookSuccess"));
-      router.push(`/${locale}/dashboard/home`);
-    } catch {
-      toast.error(t("facebookError"));
-    }
-  };
-
   return (
     <div className="flex flex-col gap-6 text-gray-200">
       <div className="text-center">
@@ -121,17 +106,6 @@ export default function RegisterPage() {
           <path d="M249 97.6c35.9 0 68.1 12.4 93.4 36.7l69.8-69.8C370.4 26.5 315.1 4 249 4 152.9 4 71 56.4 31.5 143.2l81 63.1C131.7 140.4 185.5 97.6 249 97.6z" />
         </svg>
         {t("registerGoogle")}
-      </button>
-
-      {/* Facebook Button */}
-      <button
-        type="button"
-        onClick={handleFacebook}
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white py-2 rounded-lg transition disabled:opacity-50"
-      >
-        <FaFacebook className="w-5 h-5" />
-        {t("registerFacebook")}
       </button>
 
       {/* Divider */}
