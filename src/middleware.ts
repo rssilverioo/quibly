@@ -22,8 +22,8 @@ const bypassPaths = [
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Bypass intl middleware for non-locale routes
-  if (bypassPaths.some((p) => pathname.startsWith(p))) {
+  // Bypass intl middleware for root and non-locale routes
+  if (pathname === "/" || bypassPaths.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
 
