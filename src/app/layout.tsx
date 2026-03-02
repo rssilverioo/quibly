@@ -5,6 +5,7 @@ import "./globals.css";
 import { getLocale, getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { ReactQueryProvider } from "./providers/ReactQueryProvider";
+import { DataFastAnalytics } from "@/components/DataFastAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,7 @@ export default async function RootLayout({
           </NextIntlClientProvider>
         </ReactQueryProvider>
 
+        <DataFastAnalytics />
         <Toaster
           richColors
           closeButton
