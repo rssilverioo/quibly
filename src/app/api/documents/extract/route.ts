@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { downloadFromTigris } from "@/lib/tigris";
-import { pdf as pdfParse } from "pdf-parse";
+import pdfParse from "pdf-parse";
 import { getGemini } from "@/lib/gemini";
 
 export const dynamic = "force-dynamic";
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     try {
       const result = await pdfParse(buffer);
-      text = typeof result === "string" ? result : result.text;
+      text = result.text;
     } catch (err) {
       console.warn("pdf-parse failed, will try Gemini Vision:", err);
     }
