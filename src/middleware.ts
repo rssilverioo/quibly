@@ -17,6 +17,7 @@ const bypassPaths = [
   "/manifesto",
   "/join",
   "/study",
+  "/delete-account",
 ];
 
 export function middleware(req: NextRequest) {
