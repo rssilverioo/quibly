@@ -32,117 +32,91 @@ export const metadata: Metadata = {
 
 export default function DeleteAccountPage() {
   return (
-    <main
-      className="min-h-screen pt-32 pb-20"
-      style={{ backgroundColor: "#0A0A0F" }}
-    >
+    <main className="min-h-screen bg-white dark:bg-black pt-32 pb-20 text-black dark:text-white transition-colors duration-300">
       <div className="mx-auto max-w-2xl px-6">
         {/* Header */}
         <div className="mb-10 text-center">
-          <h1 className="text-3xl font-bold text-white sm:text-4xl">
-            Excluir Conta do Quibly
+          <h1 className="text-3xl font-bold sm:text-4xl">
+            Delete Your Quibly Account
           </h1>
-          <p className="mt-2 text-lg text-gray-400">
+          <p className="mt-2 text-lg text-neutral-500 dark:text-neutral-400">
             Account Deletion Request
           </p>
         </div>
 
         {/* Card */}
-        <div
-          className="rounded-2xl p-8 sm:p-10"
-          style={{
-            backgroundColor: "#141420",
-            border: "1px solid #2A2A3E",
-          }}
-        >
+        <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-8 sm:p-10">
           {/* Steps */}
           <section className="mb-10">
-            <h2 className="mb-4 text-xl font-semibold text-white">
-              Como solicitar a exclusão
+            <h2 className="mb-4 text-xl font-semibold">
+              How to request deletion
             </h2>
-            <ol className="list-decimal space-y-2 pl-5 text-gray-400">
-              <li>Abra o aplicativo Quibly</li>
-              <li>
-                Vá até o <strong className="text-gray-300">Perfil</strong>{" "}
-                (ícone no canto inferior direito)
-              </li>
-              <li>
-                Toque em{" "}
-                <strong className="text-gray-300">Configurações</strong>
-              </li>
-              <li>
-                Role para baixo e toque em{" "}
-                <strong className="text-gray-300">
-                  &quot;Excluir minha conta&quot;
-                </strong>
-              </li>
-              <li>Confirme a exclusão</li>
-            </ol>
-            <p className="mt-4 text-gray-500">
-              Alternativa: envie um e-mail para{" "}
+            <p className="text-neutral-600 dark:text-neutral-400">
+              To delete your account, send an email to{" "}
               <a
-                href="mailto:support@tryquibly.com?subject=Excluir%20minha%20conta"
-                className="text-blue-500 underline hover:text-blue-400"
+                href="mailto:support@tryquibly.com?subject=Delete%20my%20account"
+                className="text-blue-600 dark:text-blue-400 underline hover:text-blue-500"
               >
                 support@tryquibly.com
               </a>{" "}
-              com o assunto{" "}
-              <strong className="text-gray-300">
-                &quot;Excluir minha conta&quot;
+              with the subject{" "}
+              <strong className="text-black dark:text-white">
+                &quot;Delete my account&quot;
               </strong>
-              .
+              . We will process your request and confirm via email.
             </p>
           </section>
 
           {/* Data deleted */}
           <section className="mb-10">
-            <h2 className="mb-4 text-xl font-semibold text-white">
-              Dados que serão excluídos
+            <h2 className="mb-4 text-xl font-semibold">
+              Data that will be deleted
             </h2>
-            <ul className="space-y-2 pl-5 text-gray-400 list-disc">
-              <li>Informações do perfil (nome, e-mail, foto)</li>
-              <li>Histórico e progresso de estudos</li>
-              <li>Quizzes e flashcards criados</li>
-              <li>Dados de participação em ligas</li>
-              <li>Tokens de notificação push</li>
+            <ul className="space-y-2 pl-5 text-neutral-600 dark:text-neutral-400 list-disc">
+              <li>Profile information (name, email, photo)</li>
+              <li>Study history and progress</li>
+              <li>Quizzes and flashcards created</li>
+              <li>League participation data</li>
+              <li>Push notification tokens</li>
             </ul>
           </section>
 
           {/* Data retained */}
           <section className="mb-10">
-            <h2 className="mb-4 text-xl font-semibold text-white">
-              Dados que podem ser retidos
+            <h2 className="mb-4 text-xl font-semibold">
+              Data that may be retained
             </h2>
-            <ul className="space-y-2 pl-5 text-gray-400 list-disc">
+            <ul className="space-y-2 pl-5 text-neutral-600 dark:text-neutral-400 list-disc">
               <li>
-                <strong className="text-gray-300">
-                  Registros de transações financeiras
+                <strong className="text-black dark:text-white">
+                  Financial transaction records
                 </strong>{" "}
-                (exigidos por lei) — mantidos por até 5 anos
+                (required by law) — kept up to 5 years
               </li>
               <li>
-                <strong className="text-gray-300">
-                  Logs de segurança anonimizados
+                <strong className="text-black dark:text-white">
+                  Anonymized security logs
                 </strong>{" "}
-                — mantidos por até 90 dias
+                — kept up to 90 days
               </li>
             </ul>
           </section>
 
           {/* Timeline */}
           <section>
-            <h2 className="mb-4 text-xl font-semibold text-white">Prazo</h2>
-            <p className="text-gray-400">
-              A exclusão da conta e dos dados é processada em até{" "}
-              <strong className="text-gray-300">30 dias</strong>. Você receberá
-              um e-mail de confirmação quando o processo for concluído.
+            <h2 className="mb-4 text-xl font-semibold">Timeline</h2>
+            <p className="text-neutral-600 dark:text-neutral-400">
+              Account and data deletion is processed within{" "}
+              <strong className="text-black dark:text-white">30 days</strong>.
+              You will receive an email confirmation once the process is
+              complete.
             </p>
           </section>
         </div>
 
         {/* Footer */}
-        <p className="mt-10 text-center text-sm text-gray-600">
-          Quibly &copy; 2026 — Todos os direitos reservados
+        <p className="mt-10 text-center text-sm text-neutral-400">
+          Quibly &copy; 2026 — All rights reserved
         </p>
       </div>
     </main>
