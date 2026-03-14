@@ -21,7 +21,7 @@ function PrivacyEN() {
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 font-light">
             Your data, your rules. Here&apos;s how we handle it.
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">Last updated: February 23, 2026</p>
+          <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">Last updated: March 13, 2026</p>
         </header>
 
         {/* 1. Introduction */}
@@ -69,12 +69,22 @@ function PrivacyEN() {
             <li>Advertising identifiers (collected by Google AdMob)</li>
           </ul>
 
-          <h3 className="text-2xl font-semibold mt-8 mb-4">2.4 Data We Do NOT Collect</h3>
+          <h3 className="text-2xl font-semibold mt-8 mb-4">2.4 Payment & Subscription Data</h3>
+          <ul>
+            <li>Subscription plan, status, and billing period</li>
+            <li>Stripe customer ID and subscription ID (for web payments)</li>
+            <li>Apple App Store or Google Play transaction records (for in-app purchases)</li>
+          </ul>
+          <p>
+            We do <strong>not</strong> store your credit card numbers, banking details, or full payment information. All payment processing is handled securely by Stripe, the Apple App Store, or Google Play.
+          </p>
+
+          <h3 className="text-2xl font-semibold mt-8 mb-4">2.5 Data We Do NOT Collect</h3>
           <ul>
             <li>GPS location</li>
             <li>Contacts or address book</li>
             <li>Browsing history</li>
-            <li>Financial or payment data (no in-app purchases at this time)</li>
+            <li>Credit card numbers or banking details</li>
           </ul>
         </section>
 
@@ -89,6 +99,7 @@ function PrivacyEN() {
             <li><strong>Improve the Service:</strong> Analyze usage patterns to improve features, fix bugs, and optimize performance.</li>
             <li><strong>Send Notifications:</strong> Deliver study reminders, streak alerts, and league updates via push notifications (you can opt out at any time in your device settings).</li>
             <li><strong>Display Ads:</strong> Show personalized advertisements through Google AdMob to support the free tier of the Service.</li>
+            <li><strong>Process Payments:</strong> Manage your subscription through Stripe (web), the Apple App Store, or Google Play, including billing, renewals, and cancellations.</li>
             <li><strong>Ensure Security:</strong> Detect and prevent fraud, abuse, and unauthorized access.</li>
           </ul>
         </section>
@@ -140,6 +151,21 @@ function PrivacyEN() {
                   <td className="py-3 pr-4">Google AdMob</td>
                   <td className="py-3 pr-4">Personalized advertising</td>
                   <td className="py-3">Advertising ID, device info, usage data</td>
+                </tr>
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <td className="py-3 pr-4">Stripe</td>
+                  <td className="py-3 pr-4">Payment processing (web)</td>
+                  <td className="py-3">Email, subscription plan, Stripe customer ID</td>
+                </tr>
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <td className="py-3 pr-4">Apple App Store</td>
+                  <td className="py-3 pr-4">In-app purchases & subscriptions (iOS)</td>
+                  <td className="py-3">Transaction receipts, subscription status</td>
+                </tr>
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <td className="py-3 pr-4">Google Play</td>
+                  <td className="py-3 pr-4">In-app purchases & subscriptions (Android)</td>
+                  <td className="py-3">Transaction receipts, subscription status</td>
                 </tr>
                 <tr className="border-b border-gray-200 dark:border-white/5">
                   <td className="py-3 pr-4">Railway (PostgreSQL)</td>
@@ -337,7 +363,7 @@ function PrivacyPT() {
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 font-light">
             Seus dados, suas regras. Veja como a gente cuida deles.
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">{'\u00DA'}ltima atualiza\u00E7\u00E3o: 23 de fevereiro de 2026</p>
+          <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">{'\u00DA'}ltima atualiza\u00E7\u00E3o: 13 de mar\u00E7o de 2026</p>
         </header>
 
         {/* 1. Introdução */}
@@ -385,12 +411,22 @@ function PrivacyPT() {
             <li>Identificadores de publicidade (coletados pelo Google AdMob)</li>
           </ul>
 
-          <h3 className="text-2xl font-semibold mt-8 mb-4">2.4 Dados que N&Atilde;O Coletamos</h3>
+          <h3 className="text-2xl font-semibold mt-8 mb-4">2.4 Dados de Pagamento e Assinatura</h3>
+          <ul>
+            <li>Plano de assinatura, status e per&iacute;odo de cobran&ccedil;a</li>
+            <li>ID de cliente e ID de assinatura do Stripe (para pagamentos via web)</li>
+            <li>Registros de transa&ccedil;&atilde;o da Apple App Store ou Google Play (para compras in-app)</li>
+          </ul>
+          <p>
+            N&oacute;s <strong>n&atilde;o</strong> armazenamos n&uacute;meros de cart&atilde;o de cr&eacute;dito, dados banc&aacute;rios ou informa&ccedil;&otilde;es completas de pagamento. Todo o processamento de pagamentos &eacute; feito com seguran&ccedil;a pelo Stripe, pela Apple App Store ou pelo Google Play.
+          </p>
+
+          <h3 className="text-2xl font-semibold mt-8 mb-4">2.5 Dados que N&Atilde;O Coletamos</h3>
           <ul>
             <li>Localiza&ccedil;&atilde;o GPS</li>
             <li>Contatos ou agenda telef&ocirc;nica</li>
             <li>Hist&oacute;rico de navega&ccedil;&atilde;o</li>
-            <li>Dados financeiros ou de pagamento (sem compras in-app no momento)</li>
+            <li>N&uacute;meros de cart&atilde;o de cr&eacute;dito ou dados banc&aacute;rios</li>
           </ul>
         </section>
 
@@ -405,6 +441,7 @@ function PrivacyPT() {
             <li><strong>Melhorar o Servi&ccedil;o:</strong> Analisar padr&otilde;es de uso para aprimorar funcionalidades, corrigir bugs e otimizar performance.</li>
             <li><strong>Enviar Notifica&ccedil;&otilde;es:</strong> Entregar lembretes de estudo, alertas de streak e atualiza&ccedil;&otilde;es de ligas via push notifications (voc&ecirc; pode desativar a qualquer momento nas configura&ccedil;&otilde;es do dispositivo).</li>
             <li><strong>Exibir An&uacute;ncios:</strong> Mostrar an&uacute;ncios personalizados atrav&eacute;s do Google AdMob para manter o plano gratuito do Servi&ccedil;o.</li>
+            <li><strong>Processar Pagamentos:</strong> Gerenciar sua assinatura atrav&eacute;s do Stripe (web), da Apple App Store ou do Google Play, incluindo cobran&ccedil;as, renova&ccedil;&otilde;es e cancelamentos.</li>
             <li><strong>Garantir Seguran&ccedil;a:</strong> Detectar e prevenir fraudes, abusos e acessos n&atilde;o autorizados.</li>
           </ul>
         </section>
@@ -456,6 +493,21 @@ function PrivacyPT() {
                   <td className="py-3 pr-4">Google AdMob</td>
                   <td className="py-3 pr-4">Publicidade personalizada</td>
                   <td className="py-3">ID de publicidade, info do dispositivo, dados de uso</td>
+                </tr>
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <td className="py-3 pr-4">Stripe</td>
+                  <td className="py-3 pr-4">Processamento de pagamentos (web)</td>
+                  <td className="py-3">E-mail, plano de assinatura, ID de cliente Stripe</td>
+                </tr>
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <td className="py-3 pr-4">Apple App Store</td>
+                  <td className="py-3 pr-4">Compras e assinaturas in-app (iOS)</td>
+                  <td className="py-3">Recibos de transa&ccedil;&atilde;o, status da assinatura</td>
+                </tr>
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <td className="py-3 pr-4">Google Play</td>
+                  <td className="py-3 pr-4">Compras e assinaturas in-app (Android)</td>
+                  <td className="py-3">Recibos de transa&ccedil;&atilde;o, status da assinatura</td>
                 </tr>
                 <tr className="border-b border-gray-200 dark:border-white/5">
                   <td className="py-3 pr-4">Railway (PostgreSQL)</td>
