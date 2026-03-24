@@ -319,6 +319,20 @@
       "subtitle": "Junte-se a milhares de estudantes que transformaram tempo perdido em resultado real. Grátis pra começar — seu primeiro streak está esperando.",
       "trustLine": "Grátis para sempre · Sem cartão de crédito · App web"
     },
+    "cinematic": {
+      "badge": "Ferramentas de Estudo com IA",
+      "title1": "Estude de forma inteligente.",
+      "titleGradient": "Não de forma difícil.",
+      "subtitle": "Envie qualquer PDF ou anotação — a IA do Quibly cria flashcards e quizzes em segundos. Ganhe XP, construa streaks e suba de nível enquanto aprende. Todo dia.",
+      "ctaAppStore": "Baixar para iOS",
+      "ctaGooglePlay": "Baixar para Android",
+      "badgeStreak": "Streak de 7 dias",
+      "badgeLevelUp": "Subiu de Nível!",
+      "badgeXp": "+20 XP",
+      "ctaHeading": "Enquanto você pensa, alguém já está estudando.",
+      "ctaSubtitle": "Junte-se a milhares de estudantes que transformaram tempo perdido em resultado real. Grátis pra começar — seu primeiro streak está esperando.",
+      "ctaTrust": "Grátis para sempre · Sem cartão de crédito · App web"
+    },
     "footer": {
       "tagline": "Ferramentas de estudo com IA que te tornam imparável.",
       "product": "Produto",

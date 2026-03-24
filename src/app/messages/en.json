@@ -318,6 +318,20 @@
       "subtitle": "Join thousands of students who turned wasted study time into real results. Free to start — your first streak is waiting.",
       "trustLine": "Free forever • No credit card required • Web app"
     },
+    "cinematic": {
+      "badge": "AI-Powered Study Tools",
+      "title1": "Study smarter.",
+      "titleGradient": "Not harder.",
+      "subtitle": "Upload any PDF or notes — Quibly's AI creates flashcards and quizzes in seconds. Earn XP, build streaks, and level up as you learn. Every day.",
+      "ctaAppStore": "Download for iOS",
+      "ctaGooglePlay": "Get on Google Play",
+      "badgeStreak": "7-Day Streak",
+      "badgeLevelUp": "Level Up!",
+      "badgeXp": "+20 XP",
+      "ctaHeading": "While you're thinking about it, someone else is already studying.",
+      "ctaSubtitle": "Join thousands of students who turned wasted study time into real results. Free to start — your first streak is waiting.",
+      "ctaTrust": "Free forever · No credit card required · Web app"
+    },
     "footer": {
       "tagline": "AI-powered study tools that make you unstoppable.",
       "product": "Product",
